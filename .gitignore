@@ -1,0 +1,24 @@
+# Claude Code files and skills
+.claude/
+CLAUDE.md
+**/CLAUDE.md
+**/AGENTS.md
+**/.claude/
+**/skills/
+graphify-out/
+
+# Secrets
+.env*
+!.env.example
+
+# Film working files and renders (too large for git)
+motion/
+assets/blender/glb_raw/
+
+# Build output and dependencies
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+.DS_Store
+Thumbs.db

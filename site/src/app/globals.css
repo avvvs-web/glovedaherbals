@@ -1,0 +1,2426 @@
+/* Hallmark · shape: Scroll story (the whole film scrubbed by scroll, full screen, through to the keyline and logo) · genre: editorial · theme: custom (brand system: Gloveda Design System, by request) · job: buy · idea: "the film ends where the shop begins" · vibe: "quiet wine and gold, unhurried, exact"
+ * paper: wine #56172d (hero) / ivory #fcf9f4 (sections) · accent: gold #bd9c61 · display: Marcellus · body: Marcellus · hero: full-screen scroll-scrubbed film; each chapter's text sits in the empty corner of its own shot · nav: a floating capsule, mark in the centre, a gold line gliding between items, cards for Shop and Rituals · footer: plum mast, logo over links · imagery: the film as an image sequence, the brand's own product photographs · signature: the whole film played by the visitor's own scroll, full screen
+ * axes: wine/marcellus/gold · posture: full-bleed scroll stage · contrast: pass · fold: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H4 E4 S5 R5 V4 · weakest: H, the hero split had two equal weights; the film was made the larger column so the eye lands on it first */
+/* Client instruction (2026-11-22): "Use the design system" and "Text is to be on Marcellus font". src/styles/gloveda-ds.css is the client's Gloveda Design System included verbatim; its sloplint findings (67 tracked-caps buttons and nav, 48 theme colour values, 39a, 62 .gl-reveal which this page never uses) belong to the brand system and are left as the client designed them. */
+/* Hallmark · waive 39b · gl-btn--sm at 40px on the header Shop all button · the client's design system sizes its small buttons at 40px and asked for it unchanged */
+/* Hallmark · waive 49b · product links wrap only below 415px · each link is the exact Shopify product title, so Gloveda Kumkumadi Thailam wraps rather than being renamed */
+/* Hallmark · dismissed 40 · measured on the gradient's lightest stops: ivory head 9.46:1, muted lead 6.25:1, and the outlined hero button's text is switched to ivory because gold measured 4.09:1 there */
+/* Hallmark · dismissed 41 · the film frame holds only the poster and video, never text */
+/* Hallmark · waive 71 · product card titles sit 16px under their photographs · each title is the caption of its own product photograph and heads only an optional price */
+/* Hallmark · dismissed 58 · the hero sentence is the approved copy-deck clause verbatim (14 words), kept for its search terms */
+/* Hallmark · dismissed 28a · the lazy image is the keyline close's no-JS fallback near the page end; the hero's fallback frame is fetchpriority=high */
+/* Hallmark · waive 44c · measured on the reduced-motion still page, where the intro chapter is a short section · with motion the story's film fills the whole first screen */
+/* Hallmark · waive 79 · the gap is in the reduced-motion still page beside the sticky film frame · the scroll story itself has no empty band, the film covers the screen */
+/* Hallmark · dismissed 77 · the story's eight chapters are sections inside the pinned film, counted as one by the renderer */
+/* Hallmark · dismissed 25 · chapter bodies are one- or two-sentence captions set in the empty corner of a film shot, so they keep a caption measure */
+/* Hallmark · waive 77 · the Experience section is a centred statement over a two-column ledger · it waits for the client's own clinic photographs, and no stock picture stands in for them */
+/* Hallmark · dismissed 49 · the visible label is the short "Partner with us"; the rest is a visually hidden suffix for screen readers */
+/* Hallmark · waive 59 · the shop home's three promises sit 32px under the hero as one band · they are the hero's footnote, a strip that belongs to it, not a section of their own */
+/* Hallmark · dismissed F4 · the second hero action is the design system's outlined gl-btn--secondary, not a filled button */
+@import "tailwindcss";
+@import "../styles/gloveda-ds.css";
+@import "../styles/shop-ui.css";
+@source not "../../design";
+
+/* Design-system font tokens point at the self-hosted Marcellus from next/font (preloaded). */
+:root {
+  --font-display: var(--font-marcellus), "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --font-body: var(--font-marcellus), "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  /* The client-approved website background (build/F_keyline/CLIENT_NOTE_v3_background.md). */
+  --site-wine-deep: #3a0b1d;
+  --site-wine-night: #1d050e;
+  --site-glow-wine: #7a2238;
+  --site-glow-earth: #6b2a22;
+  --site-gradient: radial-gradient(120% 80% at 75% 0%, var(--site-glow-wine) 0%, transparent 55%),
+    radial-gradient(90% 70% at 0% 100%, var(--site-glow-earth) 0%, transparent 60%),
+    linear-gradient(180deg, var(--site-wine-deep), var(--site-wine-night));
+  --film-ratio: 16 / 9;
+}
+
+/* Tailwind v4 theme mapped onto the design-system tokens (values are not redefined here). */
+@theme inline {
+  --color-wine: var(--gl-wine);
+  --color-plum: var(--gl-plum);
+  --color-terracotta: var(--gl-terracotta);
+  --color-gold: var(--gl-gold);
+  --color-gold-deep: var(--gl-gold-deep);
+  --color-ivory: var(--gl-ivory);
+  --color-ink: var(--gl-ink);
+  --color-sand: var(--gl-sand);
+  --color-stone: var(--gl-stone);
+  --color-taupe: var(--gl-taupe);
+  --font-serif: var(--font-body);
+  --font-sans: var(--font-body);
+  --radius-ds-xs: var(--radius-xs);
+  --radius-ds-sm: var(--radius-sm);
+}
+
+html,
+body {
+  overflow-x: clip;
+}
+
+html {
+  scroll-padding-top: 88px;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-synthesis: none;
+}
+
+img,
+video {
+  max-width: 100%;
+  display: block;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--space-4);
+  top: var(--space-3);
+  z-index: calc(var(--z-header) + 1);
+  transform: translateY(-200%);
+}
+
+.skip-link:focus-visible {
+  transform: none;
+}
+
+/* ---------- Page transitions ----------
+   Moving between pages of the shop, the old page fades out and the new one rises in, the navigation
+   capsule stays put, and a product's picture travels from its card to the product page. This is the
+   browser's own cross-page view transition: no script, and browsers without it simply load the page.
+   Switched off for people who prefer reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+  ::view-transition-old(root) {
+    animation: 200ms var(--ease-standard) both page-out;
+  }
+  ::view-transition-new(root) {
+    animation: 420ms cubic-bezier(0.16, 1, 0.3, 1) 60ms both page-in;
+  }
+  ::view-transition-group(*) {
+    animation-duration: 460ms;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  ::view-transition-group(site-header) {
+    z-index: 10;
+  }
+  ::view-transition-old(site-header),
+  ::view-transition-new(site-header) {
+    animation: none; /* the capsule does not blink between pages */
+  }
+  ::view-transition-old(site-header) {
+    display: none;
+  }
+}
+@keyframes page-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+/* ---------- Frosted glass ----------
+   Used only on surfaces that float over content (the capsule, the menu, the phone bar): a wine-to-
+   terracotta tint, a strong blur of what is behind, a hairline of light on the top edge. Content
+   surfaces stay solid so text and product photos are never seen through glass. */
+.glass {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--gl-ivory) 9%, transparent), transparent 38%),
+    linear-gradient(125deg, color-mix(in srgb, var(--site-wine-night) 92%, transparent), color-mix(in srgb, var(--gl-plum) 86%, transparent) 55%, color-mix(in srgb, var(--site-wine-deep) 84%, transparent));
+  -webkit-backdrop-filter: blur(26px) saturate(1.5);
+  backdrop-filter: blur(26px) saturate(1.5);
+  border: 1px solid color-mix(in srgb, var(--gl-ivory) 18%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--gl-ivory) 26%, transparent), var(--shadow-lg);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: color-mix(in srgb, var(--site-wine-night) 96%, transparent);
+  }
+}
+
+/* ---------- Header and navigation: a floating capsule ---------- */
+.site-header {
+  position: fixed;
+  z-index: var(--z-header);
+  top: var(--space-3);
+  left: 0;
+  right: 0;
+  padding-inline: var(--gutter);
+  pointer-events: none; /* only the capsule and its card take clicks */
+  background: transparent; /* the theme class would paint a band behind the capsule */
+  transition: transform var(--duration-slow) var(--ease-standard);
+}
+.nav {
+  position: relative;
+  max-width: 72rem;
+  margin-inline: auto;
+  pointer-events: auto;
+}
+.nav__capsule {
+  view-transition-name: site-header;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--space-4);
+  height: 56px;
+  padding-inline: var(--space-5) var(--space-2);
+  border-radius: var(--radius-pill);
+  transition: height var(--duration-base) var(--ease-standard);
+}
+/* Past the top of the page the capsule draws in. */
+.nav[data-condensed="true"] .nav__capsule {
+  height: 50px;
+}
+.nav__logo {
+  line-height: 0;
+  justify-self: start;
+}
+/* The logo file carries clear space around the mark; it is drawn larger and pulled back by that margin,
+   so the mark itself lines up with the capsule's edge and reads at the size of the words beside it. */
+.nav__logo img {
+  height: 46px;
+  width: auto;
+  max-width: none; /* never squeezed out of shape when the capsule is tight */
+  margin: -6px -10px -6px -2px; /* the mark sits clear of the capsule's rounded end */
+}
+.nav__side {
+  display: none;
+  align-items: center;
+  gap: var(--space-7);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.nav__item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-size: var(--text-sm);
+  letter-spacing: 0.02em;
+  color: var(--color-text);
+  text-decoration: none;
+  cursor: pointer;
+}
+/* The gold line that glides from item to item. */
+.nav__line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 8px;
+  height: 1px;
+  background: var(--gl-gold);
+}
+.nav__end {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  justify-self: end;
+}
+.nav__end .gl-btn {
+  border-radius: var(--radius-pill);
+  margin-left: var(--space-2);
+}
+.nav__icon {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
+}
+.nav__icon:hover {
+  background: color-mix(in srgb, var(--gl-gold) 18%, transparent);
+  color: var(--gl-gold);
+}
+.nav__count {
+  position: absolute;
+  top: 2px;
+  right: 0;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: var(--radius-pill);
+  background: var(--gl-gold);
+  color: var(--gl-ink);
+  font-size: 11px;
+  line-height: 16px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+/* Phones: the capsule is tight, so everything draws in a little; on the narrowest ones the account icon
+   gives way beside the Shop button (Sign in is in the menu). */
+@media (width < 48rem) {
+  .nav__capsule {
+    gap: var(--space-2);
+    padding-left: var(--space-4);
+  }
+  .nav__logo img {
+    height: 40px;
+    margin: -4px -8px -4px -2px;
+  }
+  .nav__end {
+    gap: 0;
+  }
+  .nav__icon {
+    width: 36px;
+  }
+}
+@media (width < 23.5rem) {
+  .nav__capsule:has(.nav__shop) .nav__account {
+    display: none;
+  }
+}
+/* Help is spelled out where there is room; the wishlist heart joins the capsule from tablet width up
+   (on phones both are in the menu, and the wishlist is in the bottom bar inside the shop). */
+.nav__end .nav__help,
+.nav__end .nav__wish {
+  display: none;
+}
+@media (width >= 48rem) {
+  .nav__end .nav__wish {
+    display: inline-grid;
+  }
+}
+/* Narrower desktops: the four words on the left sit a little closer, so they stay clear of the mark. */
+@media (68rem <= width < 80rem) {
+  .nav__side {
+    gap: var(--space-5);
+  }
+}
+@media (width >= 68rem) {
+  .nav__end .nav__help {
+    display: inline-flex;
+    margin-right: var(--space-4);
+  }
+}
+.nav__end .nav__shop {
+  min-height: 36px;
+  padding-inline: var(--space-4);
+}
+/* By eye: the same air on both sides of the Shop button (the icons beside it carry their own margin,
+   so the Menu icon is set a little further off), and the button sits the same distance from the
+   capsule's end as from its top and bottom. */
+.nav__end .nav__shop + .nav__menu {
+  margin-left: var(--space-2);
+}
+.nav__capsule:has(.nav__shop) {
+  padding-right: 9px;
+}
+.nav__panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + var(--space-2));
+  border-radius: var(--radius-lg);
+  max-height: calc(100svh - 96px);
+  overflow-y: auto;
+  transform-origin: 50% 0;
+}
+.nav__panelInner {
+  display: grid;
+  gap: var(--space-7);
+  padding: var(--space-6);
+}
+.nav__tiles {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+.nav__tile {
+  display: grid;
+  gap: var(--space-2);
+  color: var(--color-heading);
+  text-decoration: none;
+}
+.nav__tileMedia {
+  display: block;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--gl-ivory) 8%, transparent);
+  overflow: hidden;
+}
+.nav__tileMedia img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--duration-slow) var(--ease-enter);
+}
+.nav__tile:hover .nav__tileMedia img {
+  transform: scale(1.04);
+}
+.nav__tileName {
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+.nav__tile:hover .nav__tileName {
+  color: var(--gl-gold);
+}
+.nav__tileNote {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+.nav__groups {
+  display: grid;
+  gap: var(--space-6) var(--space-8);
+  align-content: start;
+}
+.nav__groupTitle {
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: 400;
+  color: var(--gl-gold);
+}
+.nav__group ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--space-1);
+}
+.nav__link {
+  display: inline-block;
+  padding-block: var(--space-1);
+  font-size: var(--text-xl);
+  line-height: var(--leading-snug);
+  color: var(--color-heading);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-standard), transform var(--duration-base) var(--ease-standard);
+}
+.nav__link:hover {
+  color: var(--gl-gold);
+  transform: translateX(6px);
+}
+/* The one action in the menu: into the store. */
+.nav__enter {
+  justify-self: start;
+  align-self: start;
+  gap: var(--space-2);
+  border-radius: var(--radius-pill);
+}
+@media (width >= 40rem) {
+  .nav__groups {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .nav__enter {
+    grid-column: 1 / -1;
+  }
+}
+/* While the film plays the capsule steps back; this small button keeps the store one tap away. */
+.shop-pill {
+  position: fixed;
+  top: var(--space-4);
+  right: var(--gutter);
+  z-index: var(--z-header);
+  min-height: 36px;
+  padding-inline: var(--space-4);
+  border-radius: var(--radius-pill);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: opacity var(--duration-base) var(--ease-standard), transform var(--duration-base) var(--ease-standard), visibility 0s linear var(--duration-base);
+}
+html[data-header="hidden"]:not([data-nav="open"]) .shop-pill {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0s;
+}
+@media (width >= 68rem) {
+  /* Shop links, the mark in the true centre, then search, account and the bag. */
+  .nav__capsule {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+  }
+  .nav__side {
+    display: flex;
+  }
+  .nav__enter {
+    grid-column: 1 / -1;
+  }
+  .nav__logo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    /* the artwork sits left of centre inside its file; 9px puts the mark and word on the true centre */
+    transform: translate(calc(-50% + 9px), -50%);
+  }
+  .nav__logo img {
+    margin: -6px -10px; /* centred here, so the clear space is trimmed evenly */
+  }
+  .nav__end .nav__menu {
+    display: none;
+  }
+  .nav__panelInner {
+    padding: var(--space-7) var(--space-8) var(--space-8);
+  }
+  .nav__panelInner[data-tiles="true"] {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--space-8);
+    align-items: start;
+  }
+  .nav__panelInner[data-tiles="true"] .nav__groups {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+  .nav__panelInner[data-tiles="true"] .nav__link {
+    font-size: var(--text-lg);
+  }
+  .nav__tiles {
+    gap: var(--space-5);
+  }
+  .nav__tileMedia {
+    aspect-ratio: 3 / 4;
+  }
+  .nav__panelInner[data-tiles="false"] .nav__groups {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ---------- Ease-in: every block of a page arrives quietly, once (see EaseIn.tsx) ---------- */
+[data-ease] {
+  transition: opacity 0.8s var(--ease-enter), transform 0.8s var(--ease-enter);
+}
+[data-ease="wait"] {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+/* ---------- Buttons, centred by eye ----------
+   Measured, not assumed: the ink of each label against its button, at 1x, 1.25x, 1.5x, 2x and 8x.
+   - Letter-spacing leaves a gap after the last letter, so the label is set in by that gap.
+   - The line height leaves a whole number of pixels above and below the label, so it lands on the pixel
+     grid the same way at every screen scaling.
+   - Browsers place text on whole pixels, and the small label's capitals are 9.5px tall, so in a 36px
+     pill they can only sit half a pixel high or low. A 37px pill with the label set down 1px puts
+     13.75px above and below them: centred. (The 1px below keeps the pill on whole pixels in its row.) */
+.gl-btn {
+  line-height: 16px;
+  text-indent: var(--tracking-caps);
+}
+.gl-btn--sm {
+  line-height: 14px;
+}
+.nav__end .nav__shop,
+.shop-pill {
+  min-height: 37px;
+  padding-top: 1px;
+  margin-bottom: 1px;
+}
+
+/* ---------- Search, over the page ---------- */
+.search {
+  pointer-events: auto; /* it sits inside the header, which lets clicks through by design */
+  position: fixed;
+  inset: 0 0 auto 0;
+  width: 100%;
+  max-width: none;
+  max-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  box-shadow: var(--shadow-lg);
+  overflow-y: auto;
+}
+.search::backdrop {
+  background: color-mix(in srgb, var(--site-wine-night) 60%, transparent);
+}
+.search__inner {
+  max-width: 56rem;
+  margin-inline: auto;
+  padding: var(--space-5) var(--gutter) var(--space-7);
+}
+.search__form {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-4);
+  border-bottom: 1px solid var(--color-border-strong);
+  color: var(--color-accent-text);
+}
+.search__input {
+  width: 100%;
+  height: 64px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: var(--text-xl);
+  color: var(--color-heading);
+}
+.search__input:focus-visible {
+  outline: none;
+}
+.search__input::placeholder {
+  color: var(--color-text-muted);
+}
+.search__body {
+  display: grid;
+  gap: var(--space-4);
+  padding-top: var(--space-6);
+}
+.search__quick,
+.search__results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.search__quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.search__quick .gl-chip {
+  text-decoration: none;
+}
+.search__result {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding-block: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-heading);
+  text-decoration: none;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+.search__result:hover {
+  background: color-mix(in srgb, var(--gl-gold-20) 40%, transparent);
+}
+.search__name {
+  display: grid;
+  gap: 2px;
+  font-size: var(--text-lg);
+}
+.search__range {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+.search__note {
+  margin: 0;
+}
+.search__close {
+  color: var(--color-heading);
+}
+.search__quick button.gl-chip {
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--text-sm);
+}
+
+/* ---------- Phone bottom bar (shop) ---------- */
+.bottombar {
+  display: none;
+}
+@media (width < 48rem) {
+  .bottombar {
+    position: fixed;
+    z-index: var(--z-sticky);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    padding-bottom: env(safe-area-inset-bottom);
+    border-radius: 0;
+    border-width: 1px 0 0;
+  }
+  .bottombar a,
+  .bottombar button {
+    display: grid;
+    justify-items: center;
+    gap: 2px;
+    min-height: 56px;
+    padding: var(--space-2) 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: var(--text-xs);
+    color: var(--color-text);
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .shop ~ .site-footer {
+    padding-bottom: calc(56px + var(--space-6));
+  }
+  /* The menu card stops above the bottom bar. */
+  body:has(.bottombar) .nav__panel {
+    max-height: calc(100svh - 96px - 64px);
+  }
+}
+
+/* ---------- Our story ---------- */
+.story {
+  background: var(--color-surface-muted);
+}
+.story__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-8);
+}
+.story__lead {
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+  justify-items: start;
+}
+.story__name {
+  margin: 0;
+  font-size: var(--text-lg);
+  color: var(--color-accent-text);
+}
+.story__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--text-3xl);
+  line-height: 1.1;
+  letter-spacing: var(--tracking-display);
+  color: var(--color-heading);
+  text-wrap: balance;
+  overflow-wrap: break-word;
+  min-width: 0;
+  max-width: 11em;
+}
+.story__intro {
+  margin: 0;
+  font-size: var(--text-lg);
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  max-width: 24em;
+}
+.story__timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--color-border);
+}
+.story__entry {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+  padding-block: var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+}
+.story__year {
+  margin: 0;
+  font-size: var(--text-4xl);
+  line-height: 1;
+  letter-spacing: var(--tracking-display);
+  color: var(--gl-gold-deep);
+  font-variant-numeric: lining-nums;
+}
+.story__text {
+  display: grid;
+  gap: var(--space-2);
+  align-content: start;
+}
+.story__person {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: 400;
+  line-height: var(--leading-snug);
+  color: var(--color-heading);
+}
+.story__role {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+.story__body {
+  margin: var(--space-2) 0 0;
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+  color: var(--color-text);
+  max-width: 34em;
+}
+@media (width >= 40rem) {
+  .story__entry {
+    grid-template-columns: minmax(0, 13.5rem) minmax(0, 1fr);
+    gap: var(--space-5);
+    align-items: baseline;
+  }
+}
+@media (width >= 64rem) {
+  .story__grid {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    gap: var(--space-8);
+  }
+  .story__lead {
+    position: sticky;
+    top: calc(72px + var(--space-7));
+  }
+}
+
+/* ---------- Gloveda Experience ---------- */
+.experience {
+  /* The same wine gradient as the film's closing frame, so the story runs straight into it. */
+  background: var(--site-gradient);
+  padding-block: calc(var(--section-y) + var(--space-7));
+  --exp-line: color-mix(in srgb, var(--gl-gold) 38%, transparent);
+}
+.experience__inner {
+  display: grid;
+  gap: var(--space-8);
+  justify-items: center;
+}
+.experience__lead {
+  display: grid;
+  gap: var(--space-5);
+  justify-items: center;
+  text-align: center;
+  max-width: 100%;
+}
+/* The name sits between two gold hairlines. */
+.experience__name {
+  margin: 0 0 var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  font-size: var(--text-lg);
+  color: var(--gl-gold);
+}
+.experience__name::before,
+.experience__name::after {
+  content: "";
+  width: clamp(2rem, 6vw, 5rem);
+  height: 1px;
+  background: var(--exp-line);
+}
+.experience__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--text-4xl);
+  line-height: 1.06;
+  letter-spacing: var(--tracking-display);
+  color: var(--color-heading);
+  text-wrap: balance;
+  overflow-wrap: break-word;
+  min-width: 0;
+  max-width: 13em;
+}
+.experience__intro {
+  margin: 0;
+  font-size: var(--text-lg);
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  max-width: 27em;
+  text-wrap: pretty;
+}
+.experience__ledger {
+  width: 100%;
+  max-width: 62rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-8);
+  padding-block: var(--space-7);
+  border-block: 1px solid var(--exp-line);
+}
+.experience__head {
+  margin: 0 0 var(--space-5);
+  font-size: var(--text-base);
+  font-weight: 400;
+  color: var(--gl-gold);
+}
+.experience__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--space-3);
+}
+.experience__list li {
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+  color: var(--color-text);
+}
+.experience__list--large {
+  gap: var(--space-4);
+}
+.experience__list--large li {
+  font-size: var(--text-2xl);
+  line-height: 1.15;
+  color: var(--color-heading);
+}
+@media (width >= 56rem) {
+  .experience__ledger {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0;
+  }
+  .experience__col {
+    padding-inline: var(--space-8);
+  }
+  .experience__col:first-child {
+    padding-inline-start: 0;
+  }
+  .experience__col + .experience__col {
+    border-inline-start: 1px solid var(--exp-line);
+    padding-inline-end: 0;
+  }
+}
+
+/* ---------- Scroll story ---------- */
+/* Default (no JavaScript, or reduced motion): a still page. The film's opening frame sits beside the
+   chapters, which read as ordinary stacked text. */
+.sfilm {
+  position: relative;
+}
+.sfilm__stage {
+  background: var(--site-gradient);
+  padding-block: calc(72px + var(--space-7)) var(--space-8);
+  position: relative;
+}
+.sfilm__grid {
+  width: 100%;
+  max-width: 100rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  display: grid;
+  gap: var(--space-6);
+}
+.sfilm__film {
+  position: relative;
+  aspect-ratio: var(--film-ratio);
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-xs);
+  background: var(--site-wine-night);
+  box-shadow: var(--shadow-lg);
+  order: -1;
+}
+.sfilm__poster img,
+.sfilm__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.sfilm__poster img {
+  object-fit: cover;
+}
+.sfilm__film[data-drawn="true"] .sfilm__poster {
+  visibility: hidden;
+}
+.sfilm__text {
+  display: grid;
+  gap: var(--space-8);
+  min-width: 0;
+}
+.sfilm__chapter {
+  display: grid;
+  gap: var(--space-4);
+  justify-items: start;
+  align-content: center;
+}
+.sfilm__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--text-3xl);
+  line-height: 1.1;
+  letter-spacing: var(--tracking-display);
+  color: var(--color-heading);
+  text-wrap: balance;
+  overflow-wrap: break-word;
+  min-width: 0;
+  max-width: 15ch;
+}
+.sfilm__body {
+  margin: 0;
+  font-size: var(--text-lg);
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  max-width: 30ch;
+  text-wrap: pretty;
+}
+.sfilm__cta {
+  margin-top: var(--space-3);
+}
+.sfilm__progress {
+  display: none;
+}
+
+/* Still page on wide screens (no JavaScript, or reduced motion): text beside the opening frame. */
+@media (width >= 64rem) {
+  .sfilm__grid {
+    grid-template-columns: minmax(16rem, 24rem) minmax(0, 1fr);
+    gap: var(--space-8);
+    align-items: start;
+  }
+  .sfilm__film {
+    order: 0;
+    position: sticky;
+    top: calc(72px + var(--space-6));
+  }
+}
+
+/* The scroll story proper: only where scripts run and motion is welcome. Everything in this block
+   layers over the still page above. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .sfilm {
+    height: 1010svh; /* 9.1 screens of story plus the pinned screen itself */
+  }
+  .sfilm .sfilm__stage {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    padding-block: 0;
+    display: grid;
+    align-items: center;
+    overflow: hidden;
+  }
+  .sfilm .sfilm__text {
+    display: grid;
+    gap: 0;
+  }
+  .sfilm .sfilm__chapter {
+    grid-area: 1 / 1; /* chapters share one cell and cross-fade */
+  }
+  .sfilm .sfilm__chapter:not(:first-child) {
+    opacity: 0;
+    visibility: hidden;
+  }
+  .sfilm .sfilm__progress {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: var(--gl-gold);
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+  }
+  @media (max-aspect-ratio: 6/5), (width < 48rem) {
+    /* Upright screens: the film fills the whole screen too, following the subject of each shot.
+       The chapter text rests at the foot, or in the sky where the product stands at the foot. */
+    .sfilm .sfilm__grid {
+      position: absolute;
+      inset: 0;
+      display: block;
+      max-width: none;
+      padding: 0;
+    }
+    .sfilm .sfilm__film {
+      position: absolute;
+      inset: 0;
+      aspect-ratio: auto;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .sfilm .sfilm__poster img {
+      object-fit: cover;
+      object-position: 74% 50%;
+    }
+    /* A shadow rising from the foot of the screen, so the words always sit on calm ground. */
+    .sfilm .sfilm__film::after {
+      content: "";
+      position: absolute;
+      inset: 45% 0 0;
+      background: linear-gradient(to top, color-mix(in srgb, var(--site-wine-night) 92%, transparent) 18%, transparent);
+      opacity: var(--foot, 1);
+      pointer-events: none;
+    }
+    .sfilm .sfilm__text {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: block;
+      pointer-events: none;
+    }
+    .sfilm .sfilm__chapter {
+      position: absolute;
+      left: var(--gutter);
+      right: var(--gutter);
+      bottom: max(7svh, var(--space-7));
+      gap: var(--space-3);
+      align-content: end;
+      pointer-events: auto;
+    }
+    .sfilm .sfilm__title {
+      font-size: var(--text-2xl);
+      max-width: 16ch;
+      color: var(--gl-ivory);
+    }
+    .sfilm .sfilm__body {
+      font-size: var(--text-base);
+      max-width: 32ch;
+      color: color-mix(in srgb, var(--gl-ivory) 86%, transparent);
+    }
+    .sfilm .sfilm__chapter[data-place="bc"] {
+      justify-items: center;
+      text-align: center;
+    }
+    .sfilm .sfilm__chapter[data-upright="top"] {
+      top: max(13svh, 5.5rem);
+      bottom: auto;
+      align-content: start;
+      --halo: color-mix(in srgb, var(--gl-ivory) 80%, transparent);
+      text-shadow: 0 0 0.35em var(--halo), 0 0.05em 1.4em var(--halo);
+    }
+    .sfilm [data-upright="top"] .sfilm__title {
+      color: var(--gl-plum);
+    }
+    .sfilm [data-upright="top"] .sfilm__body {
+      color: var(--gl-ink);
+    }
+    .sfilm [data-upright="top"] .gl-btn {
+      text-shadow: none;
+    }
+  }
+  @media (min-aspect-ratio: 6/5) and (width >= 48rem) {
+    /* Wide screens: the film fills the whole screen. Each chapter sits in the empty corner of its shot. */
+    .sfilm .sfilm__grid {
+      position: absolute;
+      inset: 0;
+      display: block;
+      max-width: none;
+      padding: 0;
+    }
+    .sfilm .sfilm__film {
+      position: absolute;
+      inset: 0;
+      aspect-ratio: auto;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .sfilm .sfilm__text {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: block;
+      pointer-events: none;
+    }
+    .sfilm .sfilm__chapter {
+      position: absolute;
+      left: max(var(--gutter), 6vw);
+      width: min(40rem, 40vw);
+      gap: var(--space-3);
+      pointer-events: auto;
+    }
+    .sfilm .sfilm__chapter[data-place="bl"] {
+      bottom: 7svh;
+    }
+    .sfilm .sfilm__chapter[data-place="tl"] {
+      top: 15svh;
+    }
+    .sfilm .sfilm__chapter[data-place="tr"] {
+      top: 14svh;
+      left: 63vw;
+      width: min(26rem, 26vw);
+    }
+    /* Bottom centre: one row under the picture, words on the left and the action on the right. */
+    .sfilm .sfilm__chapter[data-place="bc"] {
+      left: 0;
+      right: 0;
+      bottom: 6svh;
+      margin-inline: auto;
+      width: min(58rem, 100% - 2 * max(var(--gutter), 6vw));
+      grid-template-columns: minmax(0, 1fr) auto;
+      column-gap: var(--space-7);
+      align-items: end;
+    }
+    .sfilm [data-place="bc"] .sfilm__title,
+    .sfilm [data-place="bc"] .sfilm__body {
+      grid-column: 1;
+      max-width: none;
+    }
+    /* The action sits level with the optical middle of the two lines of text beside it. */
+    .sfilm [data-place="bc"] .sfilm__cta {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+      align-self: center;
+      margin-top: 0.35em;
+    }
+    .sfilm .sfilm__title {
+      max-width: 22ch;
+    }
+    /* Top-left chapters keep a short measure so they never reach the logo at top centre. */
+    .sfilm [data-place="tl"] .sfilm__title {
+      max-width: 8em;
+    }
+    .sfilm [data-place="tl"] .sfilm__body {
+      max-width: 22ch;
+    }
+    /* The H1 is set a step smaller so its first line ends before the lotus on the water. */
+    .sfilm h1.sfilm__title {
+      font-size: calc(var(--text-3xl) * 0.88);
+    }
+    /* Legibility comes from a soft halo in the shot's own shadow or highlight colour, never a box. */
+    .sfilm [data-tone="light"] {
+      --halo: color-mix(in srgb, var(--site-wine-night) 78%, transparent);
+      text-shadow: 0 0 0.35em var(--halo), 0 0.05em 1.6em var(--halo);
+    }
+    .sfilm [data-tone="light"] .sfilm__body {
+      color: var(--gl-ivory);
+    }
+    .sfilm [data-tone="dark"] {
+      --halo: color-mix(in srgb, var(--gl-gold-20) 70%, transparent);
+      text-shadow: 0 0 0.35em var(--halo), 0 0.05em 1.4em var(--halo);
+    }
+    .sfilm [data-tone="dark"] .sfilm__title {
+      color: var(--gl-plum);
+    }
+    .sfilm [data-tone="dark"] .sfilm__body {
+      color: var(--gl-ink);
+    }
+    .sfilm .sfilm__chapter .gl-btn {
+      text-shadow: none;
+    }
+  }
+}
+
+/* The capsule slides away while the story plays. */
+html[data-header="hidden"] .site-header {
+  transform: translateY(calc(-100% - var(--space-5)));
+}
+html[data-header="hidden"] .site-header:focus-within,
+html[data-nav="open"] .site-header {
+  transform: none;
+}
+
+/* ---------- Sections ---------- */
+.section-title {
+  margin-bottom: var(--space-7);
+}
+.lineup {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-6) var(--space-5);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (width >= 40rem) {
+  .lineup {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (width >= 64rem) {
+  .lineup {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-7) var(--space-6);
+  }
+}
+.gl-product-card__media img {
+  height: 100%;
+}
+.lineup .gl-product-card {
+  gap: var(--space-4);
+}
+.gl-product-card__link {
+  color: inherit;
+  text-decoration: none;
+}
+.gl-product-card__link:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--color-ornament);
+  text-underline-offset: 0.25em;
+}
+.collections-section {
+  background: var(--color-bg);
+}
+.collections {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  border-top: var(--border-hair);
+}
+.collections li {
+  border-bottom: var(--border-hair);
+}
+.collections__link {
+  display: block;
+  padding-block: var(--space-5);
+  font-size: var(--text-3xl);
+  line-height: var(--leading-tight);
+  color: var(--color-heading);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+.collections__link:hover {
+  color: var(--color-accent);
+}
+@media (width >= 64rem) {
+  .collections {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 0;
+  }
+  .collections li {
+    border-bottom: 0;
+    border-inline-start: var(--border-hair);
+    padding-inline-start: var(--space-5);
+  }
+}
+/* Motion reveals: with scripting off, or before it runs under reduced motion, content is simply there. */
+@media (scripting: none) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ---------- Shop ---------- */
+.shop {
+  padding-top: 72px; /* the fixed header */
+}
+.shop-hero {
+  background: var(--site-gradient);
+  margin-top: -72px; /* the hero runs up under the floating capsule */
+}
+.shop-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+.shop-hero__text {
+  display: grid;
+  gap: var(--space-5);
+  justify-items: start;
+  align-content: center;
+  padding: calc(72px + var(--space-7)) var(--gutter) var(--space-8);
+}
+.shop-hero__lead.gl-lead {
+  color: var(--color-text-muted);
+  max-width: 30ch;
+}
+.shop-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+/* Gold text on the wine glow falls short of contrast; ivory keeps the outlined button readable. */
+.shop-hero .gl-btn--secondary,
+.shop-rituals .gl-btn--secondary {
+  --btn-fg: var(--color-text);
+}
+.shop-hero__media {
+  order: -1;
+}
+.shop-hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  aspect-ratio: 16 / 9;
+}
+@media (width >= 64rem) {
+  /* Text on the left, the film's line-up running to the right edge; one screen tall at most. */
+  .shop-hero__grid {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    min-height: min(calc(100svh - 72px), 46rem);
+  }
+  .shop-hero__text {
+    padding: var(--space-8) var(--space-8) var(--space-8) max(var(--gutter), calc((100vw - var(--container)) / 2 + var(--gutter)));
+  }
+  .shop-hero__media {
+    order: 0;
+  }
+  .shop-hero__media img {
+    aspect-ratio: auto;
+  }
+}
+.shop-promises {
+  background: var(--color-surface-muted);
+  border-bottom: var(--border-hair);
+}
+.shop-promises__list {
+  list-style: none;
+  margin: 0 auto;
+  padding-block: var(--space-6);
+  display: grid;
+  gap: var(--space-5);
+}
+.shop-promises__title {
+  margin: 0 0 var(--space-1);
+  font-size: var(--text-xl);
+  font-weight: 400;
+  line-height: var(--leading-snug);
+  color: var(--color-heading);
+}
+@media (width >= 48rem) {
+  .shop-promises__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-7);
+  }
+}
+.shop-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-6);
+  margin-bottom: var(--space-7);
+}
+.shop-cats {
+  background: var(--color-surface-muted);
+}
+.shop-cats__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6);
+}
+@media (width >= 48rem) {
+  .shop-cats__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.shop-cat {
+  display: grid;
+  gap: var(--space-2);
+  color: inherit;
+  text-decoration: none;
+}
+.shop-cat__media {
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--color-surface);
+  margin-bottom: var(--space-3);
+}
+.shop-cat__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.shop-cat__title {
+  font-size: var(--text-2xl);
+  line-height: var(--leading-snug);
+  color: var(--color-heading);
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+.shop-cat:hover .shop-cat__title {
+  color: var(--color-accent);
+}
+.shop-rituals {
+  background: var(--color-bg);
+}
+.shop-rituals__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-7);
+  align-items: center;
+}
+.shop-rituals__media {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.shop-rituals__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.shop-rituals__text {
+  display: grid;
+  gap: var(--space-5);
+  justify-items: start;
+}
+.shop-rituals__lead.gl-lead {
+  color: var(--color-text-muted);
+  max-width: 34ch;
+}
+@media (width >= 64rem) {
+  .shop-rituals__grid {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: var(--space-9);
+  }
+}
+.shop-page__title {
+  margin-bottom: var(--space-6);
+}
+.shop-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-7) var(--space-5);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (width >= 40rem) {
+  .shop-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (width >= 64rem) {
+  .shop-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-8) var(--space-6);
+  }
+}
+.shop-card {
+  gap: var(--space-4);
+  justify-items: start;
+}
+.shop-card .gl-product-card__media {
+  width: 100%;
+  position: relative;
+}
+
+/* Quick view: a button on the card image, and the panel it opens */
+.quick__open {
+  position: absolute;
+  z-index: 2;
+  left: var(--space-3);
+  right: var(--space-3);
+  bottom: var(--space-3);
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border: 1px solid color-mix(in srgb, var(--gl-wine) 22%, transparent);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--gl-ivory) 92%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  font: inherit;
+  font-size: var(--text-sm);
+  color: var(--gl-wine);
+  cursor: pointer;
+  transition: opacity var(--duration-base) var(--ease-standard), transform var(--duration-base) var(--ease-standard), background var(--duration-fast) var(--ease-standard);
+}
+.quick__open:hover {
+  background: var(--gl-ivory);
+}
+@media (hover: hover) {
+  /* With a pointer the button waits until the card is hovered or focused; on touch it is always there. */
+  .quick__open {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  .shop-card:hover .quick__open,
+  .gx-card:hover .quick__open,
+  .quick__open:focus-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (hover: none) {
+  .quick__open {
+    left: auto;
+    min-height: 36px;
+    padding: 0 var(--space-3);
+    font-size: var(--text-xs);
+  }
+}
+.quick {
+  margin: auto; /* the reset removes the dialog's own centring */
+  width: min(60rem, calc(100% - 2 * var(--gutter)));
+  max-height: calc(100dvh - 2 * var(--space-5));
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+  color: var(--color-text);
+  box-shadow: var(--shadow-lg);
+  overflow-y: auto;
+}
+.quick::backdrop {
+  background: color-mix(in srgb, var(--site-wine-night) 60%, transparent);
+}
+.quick__inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5);
+  padding: var(--space-5);
+}
+.quick__info {
+  display: grid;
+  gap: var(--space-3);
+  align-content: center;
+  justify-items: start;
+  min-width: 0;
+}
+.quick__title {
+  margin: 0;
+  padding-right: var(--space-9); /* room for Close */
+}
+.quick__info .gl-small,
+.quick__summary {
+  margin: 0;
+}
+.quick__summary {
+  max-width: 34em;
+  color: var(--color-text-muted);
+}
+.quick__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4) var(--space-5);
+  margin-top: var(--space-3);
+}
+.quick .quick__close {
+  position: absolute;
+  z-index: 1;
+  top: var(--space-3);
+  right: var(--space-3);
+  width: auto;
+}
+@media (width >= 48rem) {
+  .quick__inner {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--space-7);
+    padding: var(--space-6);
+  }
+}
+@media (width < 48rem) {
+  /* On phones the panel rises from the bottom edge. */
+  .quick {
+    width: 100%;
+    max-width: none;
+    margin: auto 0 0;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    max-height: 92dvh;
+  }
+  .quick .quick__close {
+    top: var(--space-6);
+    right: var(--space-6);
+    background: color-mix(in srgb, var(--gl-ivory) 90%, transparent);
+  }
+}
+.shop-tools {
+  display: grid;
+  gap: var(--space-4);
+  margin-bottom: var(--space-7);
+  padding-bottom: var(--space-5);
+  border-bottom: var(--border-hair);
+}
+.shop-tools__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.shop-tools__links .gl-chip {
+  text-decoration: none;
+}
+.shop-tools__links .gl-chip[aria-current="true"] {
+  color: var(--color-action-text);
+  background: var(--color-action);
+  border-color: var(--color-action);
+}
+.shop-search {
+  max-width: 36rem;
+  margin-bottom: var(--space-7);
+}
+.shop-search__count {
+  margin-bottom: var(--space-6);
+}
+.collections--wide {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+}
+.cart-button {
+  margin-inline-start: 0;
+}
+
+/* Rituals */
+.rituals__lead.gl-lead {
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-7);
+}
+.rituals {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-8) var(--space-6);
+}
+@media (width >= 40rem) {
+  .rituals {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (width >= 64rem) {
+  .rituals {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.ritual {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+  align-content: start;
+}
+.ritual__media {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  background: var(--color-surface-muted);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: var(--space-2);
+}
+.ritual__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ritual__title {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: 400;
+  line-height: var(--leading-snug);
+}
+.ritual__title a {
+  color: var(--color-heading);
+  text-decoration: none;
+}
+.ritual__about {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: var(--color-text-muted);
+}
+.ritual__price {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-variant-numeric: tabular-nums;
+}
+.builder-section {
+  background: var(--color-surface-muted);
+}
+.builder {
+  display: grid;
+  gap: var(--space-7);
+}
+.builder__group {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+.builder__legend {
+  padding: 0;
+  margin-bottom: var(--space-4);
+  font-size: var(--text-xl);
+  color: var(--color-heading);
+}
+.builder__options {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 9.5rem), 1fr));
+  gap: var(--space-4);
+}
+.builder__option {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard);
+}
+.builder__option:hover {
+  border-color: var(--color-border-strong);
+}
+.builder__option[data-on="true"] {
+  border-color: var(--color-border-strong);
+  box-shadow: inset 0 0 0 1px var(--color-border-strong);
+  background: var(--color-action-subtle);
+}
+.builder__option:has(input:focus-visible) {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+.builder__option[data-off="true"] {
+  cursor: not-allowed;
+  color: var(--color-text-muted);
+  background: var(--color-surface-muted);
+  border-style: dashed;
+}
+.builder__thumb {
+  aspect-ratio: 1;
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  background: var(--color-surface-muted);
+}
+.builder__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.builder__name {
+  font-size: var(--text-base);
+  line-height: var(--leading-snug);
+  color: var(--color-heading);
+}
+.builder__price {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.builder__bar {
+  position: sticky;
+  bottom: var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-surface);
+  border: var(--border-hair);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+}
+.builder__summary {
+  margin: 0;
+  font-size: var(--text-lg);
+  color: var(--color-heading);
+}
+
+/* Policies */
+.policy__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-7);
+}
+.policy__nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+}
+.policy__navLink {
+  display: inline-block;
+  padding-block: var(--space-2);
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+.policy__navLink:hover,
+.policy__navLink[aria-current="page"] {
+  color: var(--color-heading);
+  text-decoration: underline;
+  text-decoration-color: var(--color-ornament);
+  text-underline-offset: 0.3em;
+}
+.policy__body {
+  max-width: 44rem;
+  min-width: 0;
+}
+.policy__date {
+  margin-top: var(--space-4);
+}
+.policy__summary.gl-lead {
+  margin-top: var(--space-5);
+  color: var(--color-text-muted);
+}
+.policy__open {
+  margin-top: var(--space-6);
+}
+.policy__openTitle {
+  color: var(--color-heading);
+}
+.policy__open ul {
+  margin: var(--space-2) 0 0;
+  padding-inline-start: var(--space-5);
+  display: grid;
+  gap: var(--space-1);
+}
+.policy__section {
+  margin-top: var(--space-7);
+  display: grid;
+  gap: var(--space-3);
+}
+.policy__head {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: 400;
+  line-height: var(--leading-snug);
+  color: var(--color-heading);
+}
+.policy__list {
+  margin: 0;
+  padding-inline-start: var(--space-5);
+  display: grid;
+  gap: var(--space-2);
+  max-width: var(--measure);
+}
+@media (width >= 64rem) {
+  .policy__grid {
+    grid-template-columns: 14rem minmax(0, 1fr);
+    gap: var(--space-9);
+  }
+  .policy__nav ul {
+    display: grid;
+    position: sticky;
+    top: calc(72px + var(--space-6));
+  }
+}
+
+/* Product page */
+.pdp__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-7);
+}
+.pdp__gallery {
+  min-width: 0;
+}
+.pdp__main {
+  position: relative;
+  aspect-ratio: 1;
+  background: var(--color-surface-muted);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  touch-action: pan-y; /* swipe sideways for the next image, scroll the page as usual */
+}
+.pdp__frame {
+  position: absolute;
+  inset: 0;
+}
+.pdp__frame img,
+.pdp__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Previous and next, on the large image. */
+.pdp__step {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  right: var(--space-3);
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-top: -22px;
+  padding: 0;
+  border-radius: var(--radius-pill);
+  color: var(--gl-ivory);
+  cursor: pointer;
+  transition: transform var(--duration-base) var(--ease-enter);
+}
+.pdp__step--prev {
+  right: auto;
+  left: var(--space-3);
+}
+.pdp__step--prev svg {
+  transform: scaleX(-1);
+}
+.pdp__step:hover {
+  transform: translateX(3px);
+}
+.pdp__step--prev:hover {
+  transform: translateX(-3px);
+}
+.pdp__count {
+  position: absolute;
+  right: var(--space-3);
+  bottom: var(--space-3);
+  margin: 0;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--gl-ivory) 86%, transparent);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+}
+.pdp__thumbs {
+  list-style: none;
+  margin: var(--space-3) 0 0;
+  padding: 2px;
+  display: flex;
+  gap: var(--space-3);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.pdp__thumb {
+  display: block;
+  width: 76px;
+  height: 76px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+  overflow: hidden;
+  cursor: pointer;
+  opacity: 0.62;
+  transition: opacity var(--duration-base) var(--ease-standard), border-color var(--duration-base) var(--ease-standard);
+}
+.pdp__thumb:hover {
+  opacity: 1;
+}
+.pdp__thumb[aria-current="true"] {
+  opacity: 1;
+  border-color: var(--gl-gold-deep);
+  box-shadow: 0 0 0 1px var(--gl-gold-deep);
+}
+
+/* Complete the ritual: this product plus others from its range, added together */
+.ritual-add {
+  display: grid;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  margin-bottom: var(--space-5);
+}
+.ritual-add .gl-small {
+  margin: 0;
+}
+.ritual-add__list {
+  list-style: none;
+  margin: var(--space-2) 0 0;
+  padding: 0;
+}
+.ritual-add__item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding-block: var(--space-3);
+  border-top: 1px solid var(--color-border);
+}
+.ritual-add__item[data-fixed="true"] {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  padding-left: calc(18px + var(--space-3)); /* lines up with the ticked rows */
+  gap: var(--space-3);
+}
+.ritual-add__item[data-fixed="true"] .ritual-add__price {
+  margin-left: auto;
+}
+.ritual-add__label {
+  display: grid;
+  grid-template-columns: 18px auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 44px;
+  cursor: pointer;
+}
+.ritual-add__label input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--gl-wine);
+}
+.ritual-add__thumb {
+  display: block;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+  overflow: hidden;
+}
+.ritual-add__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ritual-add__name {
+  font-size: var(--text-base);
+  line-height: var(--leading-snug);
+  color: var(--color-heading);
+}
+.ritual-add__name .gl-small {
+  display: block;
+  color: var(--color-text-muted);
+}
+.ritual-add__price {
+  font-size: var(--text-base);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+}
+.ritual-add__foot {
+  display: grid;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+.ritual-add__total {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  font-size: var(--text-lg);
+  color: var(--color-heading);
+  font-variant-numeric: tabular-nums;
+}
+.pdp__info {
+  display: grid;
+  gap: var(--space-3);
+  align-content: start;
+  justify-items: start;
+  min-width: 0;
+}
+.pdp__price {
+  margin: 0;
+  font-size: var(--text-xl);
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+.pdp__buy {
+  margin-block: var(--space-4) var(--space-5);
+}
+.pdp__description {
+  display: grid;
+  gap: var(--space-4);
+  padding-top: var(--space-6);
+  border-top: var(--border-hair);
+  width: 100%;
+}
+.pdp__head {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 400;
+  color: var(--color-heading);
+}
+@media (width >= 64rem) {
+  .pdp__grid {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: var(--space-9);
+    align-items: start;
+  }
+  .pdp__info {
+    position: sticky;
+    top: calc(72px + var(--space-6));
+  }
+}
+
+/* Cart drawer */
+.cart {
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: min(28rem, 100%);
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  box-shadow: var(--shadow-lg);
+}
+.cart::backdrop {
+  background: color-mix(in srgb, var(--site-wine-night) 60%, transparent);
+}
+.cart__inner {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100%;
+}
+.cart__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5);
+  border-bottom: var(--border-hair);
+}
+.cart__empty {
+  padding: var(--space-6) var(--space-5);
+}
+.cart__lines {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--space-5);
+  overflow-y: auto;
+}
+.cart__line {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr) auto;
+  gap: var(--space-4);
+  padding-block: var(--space-5);
+  border-bottom: var(--border-hair);
+  align-items: start;
+}
+.cart__thumb {
+  width: 5rem;
+  height: 5rem;
+  object-fit: cover;
+  border-radius: var(--radius-xs);
+  background: var(--color-surface-muted);
+}
+.cart__lineBody {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+}
+.cart__name {
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+  color: var(--color-heading);
+  text-decoration: none;
+}
+.cart__remove {
+  background: none;
+  border: 0;
+  padding: var(--space-2) 0;
+  font: inherit;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+.cart__foot {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border-top: var(--border-hair);
+}
+.cart__subtotal {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  font-size: var(--text-lg);
+  color: var(--color-heading);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Footer ---------- */
+.site-footer {
+  position: relative;
+  background: var(--site-gradient);
+  color: var(--color-text);
+  padding-bottom: var(--space-6);
+  overflow: hidden;
+}
+/* The crown: the closing line and a way into the shop, beside the film's gold keyline line-up. The
+   drawing has its own space; the words never sit on top of it. */
+.site-footer__crown {
+  border-bottom: 1px solid color-mix(in srgb, var(--gl-gold) 28%, transparent);
+}
+.site-footer__crownInner {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-6);
+  padding-block: var(--space-8);
+  text-align: center;
+}
+/* A window onto the closing frame of the film, framed on the row of outlined packs alone. */
+.site-footer__artBox {
+  position: relative;
+  width: min(100%, 34rem);
+  aspect-ratio: 2.17;
+  overflow: hidden;
+  /* Only the gold lines are kept: the frame's own dark ground drops out against the footer. */
+  mix-blend-mode: lighten;
+  mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent), linear-gradient(to bottom, transparent, #000 10%, #000 86%, transparent);
+  mask-composite: intersect;
+  pointer-events: none;
+}
+.site-footer__art {
+  position: absolute;
+  left: -33.33%;
+  top: -53%;
+  width: 166.67%;
+  max-width: none;
+  height: auto;
+}
+.site-footer__words {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-6);
+}
+.site-footer__statement {
+  margin: 0;
+  font-size: var(--text-4xl);
+  line-height: 1.04;
+  letter-spacing: var(--tracking-display);
+  color: var(--color-heading);
+  text-wrap: balance;
+}
+.site-footer__crownActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4) var(--space-6);
+}
+@media (width >= 64rem) {
+  .site-footer__crownInner {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    align-items: center;
+    gap: var(--space-8);
+    padding-block: var(--space-9);
+    text-align: left;
+  }
+  .site-footer__words {
+    justify-items: start;
+    gap: var(--space-7);
+  }
+  .site-footer__crownActions {
+    justify-content: flex-start;
+  }
+  .site-footer__artBox {
+    order: 2;
+    width: 100%;
+    justify-self: end;
+  }
+}
+.site-footer__top {
+  display: grid;
+  gap: var(--space-8);
+  padding-block: var(--space-8);
+}
+.site-footer__brand {
+  display: grid;
+  gap: var(--space-5);
+  align-content: start;
+  justify-items: start;
+}
+.site-footer__logo {
+  width: 120px;
+  height: auto;
+}
+.site-footer__line {
+  margin: 0;
+  max-width: 19em;
+  font-size: var(--text-lg);
+  line-height: 1.5;
+  color: var(--color-heading);
+}
+.site-footer__cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-7) var(--space-5);
+}
+.site-footer__head {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 400;
+  color: var(--gl-gold);
+}
+.site-footer ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+.site-footer .site-footer__also,
+.site-footer .site-footer__social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+}
+.site-footer__link {
+  display: inline-block;
+  padding-block: var(--space-1);
+  font-size: var(--text-base);
+  color: var(--color-text);
+  text-decoration: none;
+  background: linear-gradient(var(--gl-gold), var(--gl-gold)) 0 100% / 0 1px no-repeat;
+  transition: background-size var(--duration-base) var(--ease-enter), color var(--duration-fast) var(--ease-standard);
+}
+.site-footer__link:hover {
+  color: var(--color-heading);
+  background-size: 100% 1px;
+}
+.site-footer__base {
+  display: grid;
+  gap: var(--space-4);
+  align-items: center;
+  padding-top: var(--space-5);
+  border-top: 1px solid color-mix(in srgb, var(--gl-gold) 28%, transparent);
+}
+.site-footer__base .gl-small {
+  margin: 0;
+}
+@media (width >= 64rem) {
+  .site-footer__top {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: var(--space-9);
+  }
+  .site-footer__cols {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .site-footer__base {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: var(--space-7);
+  }
+  .site-footer__base .gl-small {
+    text-align: center;
+  }
+}
+
+/* ---------- Scrollbars ----------
+   Thin and gold on the page; hidden on the small scrolling strips inside it (they are swiped or
+   dragged, and their arrows and edges already show there is more). */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--gl-gold) 70%, transparent) var(--site-wine-night);
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--site-wine-night);
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--gl-gold) 70%, transparent);
+  border: 3px solid var(--site-wine-night);
+  border-radius: var(--radius-pill);
+}
+.nav__panel,
+.search,
+.cart,
+.quick,
+.pdp__thumbs,
+.gx-tabs,
+.gx-jump {
+  scrollbar-width: none;
+}
+.nav__panel::-webkit-scrollbar,
+.search::-webkit-scrollbar,
+.cart::-webkit-scrollbar,
+.cart *::-webkit-scrollbar,
+.quick::-webkit-scrollbar,
+.pdp__thumbs::-webkit-scrollbar,
+.gx-tabs::-webkit-scrollbar,
+.gx-jump::-webkit-scrollbar {
+  display: none;
+}
+
+/* Display heads never overflow narrow screens. */
+.gl-display,
+.gl-h1,
+.gl-h2,
+.gl-h3 {
+  overflow-wrap: break-word;
+  min-width: 0;
+}
