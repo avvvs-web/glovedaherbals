@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { filmLoad } from "@/lib/film-load";
 import { FrameSequence, supportsAvif, type SequenceFormat } from "@/lib/frame-sequence";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -177,7 +178,10 @@ export function ScrollFilm({ chapters }: Props) {
   useEffect(() => {
     const box = film.current;
     if (!box) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return; // the still frame is enough
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      filmLoad.set(1); // the still frame is enough, and there is nothing for the loader to wait for
+      return;
+    }
     let cancelled = false;
     // Native 1080p frames wherever the film is drawn wider than 1280 device pixels; 720p below that.
     // (On upright screens the film is as tall as the screen, so far wider than it.)
@@ -194,7 +198,18 @@ export function ScrollFilm({ chapters }: Props) {
         if (Math.abs(i - state.current.frame) <= 8) requestAnimationFrame(draw);
       };
       seq.current = s;
-      s.start([Math.round(state.current.frame)]);
+      // What the film needs before it can play smoothly from where the page opens: the frame on screen,
+      // every 16th frame of the whole film (so any scroll position has a picture), and every 4th frame of
+      // the passage ahead. These are fetched first and the loader counts them; the rest follow behind.
+      const here = Math.round(state.current.frame);
+      const need = new Set<number>([here]);
+      for (let i = 0; i < FRAMES; i += 16) need.add(i);
+      for (let i = here; i <= Math.min(FRAMES - 1, here + 64); i += 4) need.add(i);
+      let got = 0;
+      s.onFrame = (i) => {
+        if (need.delete(i)) filmLoad.set(++got / (got + need.size));
+      };
+      s.start([here, ...[...need].filter((i) => i !== here)]);
     });
     const ro = new ResizeObserver(() => requestAnimationFrame(draw));
     ro.observe(box);

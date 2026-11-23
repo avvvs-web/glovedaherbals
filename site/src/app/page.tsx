@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+import { FilmLoader } from "@/components/storytelling/FilmLoader";
 import { ScrollFilm, type Chapter } from "@/components/storytelling/ScrollFilm";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { RangeDoors } from "@/components/shop/RangeDoors";
@@ -102,6 +103,11 @@ export default function Home() {
       <a className="gl-btn gl-btn--sm skip-link" href="#main">
         Skip to content
       </a>
+      <FilmLoader />
+      {/* Without scripts nothing would ever clear the loader, so it is not shown at all. */}
+      <noscript>
+        <style>{".floader{display:none}"}</style>
+      </noscript>
       <SmoothScroll />
       <SiteHeader />
       <main id="main">

@@ -513,6 +513,170 @@ html[data-header="hidden"]:not([data-nav="open"]) .shop-pill {
   }
 }
 
+/* ---------- The opening loader: the film's paper-cut sun, rising behind paper hills as the film arrives ---------- */
+/* The page is held still only while the loader is actually on screen (it is not, under reduced motion). */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-loading="true"] {
+    overflow: hidden;
+  }
+}
+.floader {
+  --rise: 0; /* 0 to 1: the share of the film that has loaded */
+  --sun: clamp(13rem, 50vmin, 28rem);
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-toast) + 10);
+  overflow: hidden;
+  background: var(--site-gradient), var(--gl-plum);
+  transition: opacity 1s var(--ease-standard), visibility 0s linear 1s;
+  /* A last resort if the page's scripts never start: the loader lets go by itself after 16 seconds. */
+  animation: floader-let-go 0.6s var(--ease-standard) 16s forwards;
+}
+@keyframes floader-let-go {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+.floader[data-phase="leaving"] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.floader__stage {
+  position: absolute;
+  inset: 0;
+}
+/* The sun sits a little above the middle; it starts low behind the hills and climbs as the film loads. */
+.floader__sun {
+  position: absolute;
+  left: 50%;
+  top: 43%;
+  width: var(--sun);
+  aspect-ratio: 1;
+  margin: calc(var(--sun) / -2) 0 0 calc(var(--sun) / -2);
+  transform: translateY(calc((1 - var(--rise)) * 46%));
+  transition: transform 0.9s var(--ease-enter);
+}
+.floader__sun svg {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+/* Its light on the sky behind. */
+.floader__glow {
+  position: absolute;
+  inset: -22%;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--gl-gold) 55%, transparent), color-mix(in srgb, var(--gl-terracotta) 30%, transparent) 45%, transparent 70%);
+  opacity: calc(0.35 + var(--rise) * 0.5);
+  animation: floader-breathe 4.5s var(--ease-standard) infinite alternate;
+  transition: opacity 0.9s var(--ease-standard);
+}
+.floader__rays {
+  transform-origin: 200px 200px;
+  animation: floader-turn 90s linear infinite;
+}
+/* Each ray is set in from the sun's edge as the film loads. */
+.floader__ray {
+  transform-origin: 200px 200px;
+  transform: scale(0.62);
+  opacity: 0;
+  transition: transform 0.7s var(--ease-enter), opacity 0.4s var(--ease-standard);
+}
+.floader__ray[data-on="true"] {
+  transform: none;
+  opacity: 1;
+}
+.floader__hills {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: calc(57% - var(--sun) * 0.34);
+  min-height: 34%;
+}
+/* Gold dust rising in the sky. */
+.floader__sky {
+  position: absolute;
+  inset: 0;
+}
+.floader__mote {
+  position: absolute;
+  bottom: 38%;
+  border-radius: 50%;
+  background: var(--gl-gold);
+  opacity: 0;
+  animation: floader-mote linear infinite;
+}
+@keyframes floader-mote {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(var(--drift), -52vh);
+    opacity: 0;
+  }
+}
+.floader__words {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: max(9svh, var(--space-8));
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+}
+.floader__line {
+  margin: 0;
+  font-size: var(--text-xl);
+  color: var(--gl-ivory);
+}
+.floader__num {
+  margin: 0;
+  font-size: var(--text-base);
+  color: var(--gl-gold);
+  font-variant-numeric: tabular-nums;
+}
+.floader__num::after {
+  content: "%";
+}
+/* Ready: the sun opens out over the screen as the loader clears. */
+.floader[data-phase="leaving"] .floader__sun {
+  transform: scale(4.5);
+  transition: transform 1.1s var(--ease-enter);
+}
+.floader[data-phase="leaving"] .floader__words,
+.floader[data-phase="leaving"] .floader__hills {
+  opacity: 0;
+  transition: opacity 0.35s var(--ease-standard);
+}
+@keyframes floader-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes floader-breathe {
+  from {
+    transform: scale(0.94);
+  }
+  to {
+    transform: scale(1.06);
+  }
+}
+/* Reduced motion: the film is a still picture, so there is nothing to wait for. */
+@media (prefers-reduced-motion: reduce) {
+  .floader {
+    display: none;
+  }
+}
+
 /* ---------- Ease-in: every block of a page arrives quietly, once (see EaseIn.tsx) ---------- */
 [data-ease] {
   transition: opacity 0.8s var(--ease-enter), transform 0.8s var(--ease-enter);
