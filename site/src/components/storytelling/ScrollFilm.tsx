@@ -96,6 +96,25 @@ function uprightRect(w: number, h: number, frame: number) {
   return { ...r, x: Math.min(0, Math.max(w - r.w, w / 2 - at * r.w)) };
 }
 
+/**
+ * Wide screens that are wider than the film (most laptops, once the browser's bars are taken off the
+ * height). Filling the width there crops the top and bottom of every shot, and in the closing shot that
+ * cut the logo, and it pushed the line-up into its own caption. Over these frames the camera pulls back until the whole height is in view; the plain
+ * background at the sides is continued by mirroring the frame's own edge, never by more than SIDE of its width.
+ */
+const PULL_BACK: [number, number] = [400, 444]; // as the products fly out: the sides are plain background from here on
+const SIDE = 0.16;
+function wideRect(w: number, h: number, frame: number) {
+  const cover = coverRect(w, h);
+  if (cover.h <= h + 1) return cover; // 16:9 or taller: nothing is lost at the top
+  const k = Math.max(0, Math.min(1, (frame - PULL_BACK[0]) / (PULL_BACK[1] - PULL_BACK[0])));
+  const e = k * k * (3 - 2 * k);
+  const fit = Math.max(h / 9, w / (16 * (1 + 2 * SIDE)));
+  const scale = cover.w / 16 + (fit - cover.w / 16) * e;
+  // Past the limit the foot is cropped, not the top: the logo stands at the top of the shot.
+  return { x: (w - 16 * scale) / 2, y: ((h - 9 * scale) / 2) * (1 - e), w: 16 * scale, h: 9 * scale };
+}
+
 export type Chapter = {
   id: string;
   /** Where the text sits on the full-screen film: the empty corner of that shot. */
@@ -149,10 +168,10 @@ export function ScrollFilm({ chapters }: Props) {
     const key = Math.max(0, Math.min(FRAMES - 1, state.current.frame));
     const near = Math.round(key);
     const wide = box.clientWidth >= 768 && w / h >= 1.2; // matches the CSS: wide screens get the film edge to edge
-    const r = wide ? coverRect(w, h) : uprightRect(w, h, key);
+    const r = wide ? wideRect(w, h, key) : uprightRect(w, h, key);
     if (near !== state.current.focus) {
       // Keep the frames around this one decoded, at the width they are drawn (in steps, so a slow zoom does not restart it).
-      s.focus(near, key >= state.current.drawn ? 1 : -1, Math.ceil(r.w / 128) * 128);
+      s.focus(near, key >= state.current.drawn ? 1 : -1, Math.ceil((wide ? coverRect(w, h).w : r.w) / 128) * 128);
       state.current.focus = near;
     }
     const lo = Math.floor(key);
@@ -165,10 +184,22 @@ export function ScrollFilm({ chapters }: Props) {
     if (!img) return;
     const blend = img === a && b ? b : null;
     ctx.imageSmoothingQuality = "high";
-    ctx.drawImage(img, r.x, r.y, r.w, r.h);
+    const side = Math.ceil(r.x); // the strip left bare at each side when the camera has pulled back
+    const paint = (bmp: ImageBitmap) => {
+      ctx.drawImage(bmp, r.x, r.y, r.w, r.h);
+      if (side <= 0) return;
+      const sw = (side / r.w) * bmp.width;
+      // The frame's own edge, mirrored outward from each side.
+      ctx.setTransform(-1, 0, 0, 1, r.x + 1, 0);
+      ctx.drawImage(bmp, 0, 0, sw, bmp.height, 0, r.y, side + 1, r.h);
+      ctx.setTransform(-1, 0, 0, 1, 2 * (r.x + r.w) - 1, 0);
+      ctx.drawImage(bmp, bmp.width - sw, 0, sw, bmp.height, r.x + r.w - side - 1, r.y, side + 1, r.h);
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+    };
+    paint(img);
     if (blend) {
       ctx.globalAlpha = mix;
-      ctx.drawImage(blend, r.x, r.y, r.w, r.h);
+      paint(blend);
       ctx.globalAlpha = 1;
     }
     box.dataset.drawn = "true"; // the canvas now owns the picture; the fallback frame can hide

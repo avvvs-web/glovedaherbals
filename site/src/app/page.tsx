@@ -83,7 +83,7 @@ const chapters: Chapter[] = [
   {
     id: "range", place: "bl", tone: "light",
     from: 362,
-    to: 506,
+    to: 470, // gone before the line-up settles into this corner
     title: "Your ritual, bottled.",
     body: "Seven essentials for face, hair and body. Start with one, and build from there.",
   },
