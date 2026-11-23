@@ -11,8 +11,9 @@ graphify-out/
 .env*
 !.env.example
 
-# Film working files and renders (too large for git)
-motion/
+# Film working files and renders (too large for git). Anchored to the repository root: an unanchored
+# "motion/" also swallowed site/src/components/motion/, which the site needs to build.
+/motion/
 assets/blender/glb_raw/
 
 # Build output and dependencies
