@@ -20,7 +20,7 @@ export function BuyBar({ watch, variantId, available, title, price }: { watch: s
     <div className="gx-buybar glass theme-wine" data-shown={shown} aria-hidden={!shown} inert={!shown}>
       <p className="gx-buybar__text">
         <span className="gx-buybar__name">{title}</span>
-        <span className="gx-buybar__price">{price}</span>
+        <span className="gx-buybar__price" data-price>{price}</span>
       </p>
       <AddButton variantId={variantId} available={available} title={title} />
     </div>

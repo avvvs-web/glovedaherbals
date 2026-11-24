@@ -5,6 +5,7 @@ import { StoreDown } from "@/components/shop/ProductCard";
 import { RitualBuilder, type BuilderGroup } from "@/components/shop/RitualBuilder";
 import { formatMoney, getCollectionProducts } from "@/lib/shop/data";
 import { shopUrl } from "@/lib/site";
+import { Price } from "@/components/shop/ui/Price";
 
 export const metadata: Metadata = {
   title: "Rituals",
@@ -51,7 +52,7 @@ export default async function RitualsPage() {
                       <a href={shopUrl(`/products/${p.handle}`)}>{p.title}</a>
                     </h2>
                     {p.description[0] ? <p className="gl-body ritual__about">{p.description[0]}</p> : null}
-                    <p className="ritual__price">{p.available ? formatMoney(p.price) : `${formatMoney(p.price)}, sold out`}</p>
+                    <p className="ritual__price"><Price>{p.available ? formatMoney(p.price) : `${formatMoney(p.price)}, sold out`}</Price></p>
                     <AddToCart variantId={v.id} available={p.available} label="Add ritual to cart" small />
                   </li>
                 );

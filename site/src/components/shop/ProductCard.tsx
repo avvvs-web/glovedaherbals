@@ -4,6 +4,7 @@ import { Heart } from "@/components/shop/ui/Heart";
 import { Plate } from "@/components/shop/ui/Plate";
 import { formatMoney, type ShopProduct } from "@/lib/shop/data";
 import { shopUrl } from "@/lib/site";
+import { Price } from "@/components/shop/ui/Price";
 
 /**
  * A product in a grid: the plate (with quick view and the heart), then the name, with the price and a
@@ -37,7 +38,7 @@ export function ProductCard({ product, priority = false, named = true }: { produ
         </a>
       </h3>
       <div className="gx-card__foot">
-        <p className="gx-card__price">{product.available ? formatMoney(v.price) : "Sold out"}</p>
+        <p className="gx-card__price"><Price>{product.available ? formatMoney(v.price) : "Sold out"}</Price></p>
         <AddButton variantId={v.id} available={product.available} title={product.title} compact />
       </div>
     </li>

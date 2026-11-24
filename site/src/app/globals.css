@@ -2622,3 +2622,9 @@ html {
   overflow-wrap: break-word;
   min-width: 0;
 }
+
+/* ---------- Markets ---------- */
+/* A market whose prices are not set in Shopify yet (see src/proxy.ts): every price on the site is hidden. */
+html[data-prices="hidden"] [data-price] {
+  display: none !important;
+}

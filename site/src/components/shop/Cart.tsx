@@ -14,6 +14,7 @@ import {
   useSyncExternalStore,
   type ReactNode,
 } from "react";
+import { Price } from "@/components/shop/ui/Price";
 
 /** What the cart needs to know about a variant; always taken from the live catalogue, never stored. */
 export type CartVariant = {
@@ -237,9 +238,7 @@ export function CartProvider({
                           {v.title}
                         </a>
                         <p className="gl-small">
-                          {v.available
-                            ? v.priceText
-                            : `${v.priceText}, sold out`}
+                          <Price>{v.available ? v.priceText : `${v.priceText}, sold out`}</Price>
                         </p>
                         <div
                           className="gl-qty"
@@ -276,7 +275,7 @@ export function CartProvider({
                   ))}
                 </ul>
                 <footer className="cart__foot">
-                  <p className="cart__subtotal">
+                  <p className="cart__subtotal" data-price>
                     <span>Subtotal</span>
                     <span>{money.format(subtotal)}</span>
                   </p>

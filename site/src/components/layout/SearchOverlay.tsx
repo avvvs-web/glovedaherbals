@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "reac
 import { Icon } from "@/components/shop/ui/Icon";
 import { smartSearch } from "@/lib/shop/smart-search";
 import type { NavLink, SearchItem } from "./SiteNav";
+import { Price } from "@/components/shop/ui/Price";
 
 const KEY = "gloveda-searches-v1";
 const listeners = new Set<() => void>();
@@ -137,7 +138,7 @@ export function SearchOverlay({ open, onClose, items, action, shortcuts }: { ope
                               {r.title}
                               <span className="search__range">{r.range}</span>
                             </span>
-                            <span className="gx-row__price">{r.priceText}</span>
+                            <span className="gx-row__price"><Price>{r.priceText}</Price></span>
                           </a>
                         </motion.li>
                       ))}

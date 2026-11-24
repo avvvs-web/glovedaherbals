@@ -1,3 +1,4 @@
+import Script from "next/script";
 import { EaseIn } from "@/components/motion/EaseIn";
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
@@ -27,8 +28,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en-IN" className={marcellus.variable}>
+    <html lang="en-IN" className={marcellus.variable} suppressHydrationWarning>
       <body className="gl-root">
+        {/* Before the page is interactive: the proxy's cookie says whether this visitor's market has prices yet. */}
+        <Script id="market-prices" strategy="beforeInteractive">
+          {`if(/(^|; )gl_prices=hidden/.test(document.cookie))document.documentElement.dataset.prices="hidden"`}
+        </Script>
         {children}
         <EaseIn />
       </body>

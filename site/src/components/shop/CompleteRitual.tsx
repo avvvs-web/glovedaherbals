@@ -38,7 +38,7 @@ export function CompleteRitual({ current, others, range, currency }: { current: 
             {current.title}
             <span className="gl-small"> This product</span>
           </span>
-          <span className="ritual-add__price">{money.format(current.price)}</span>
+          <span className="ritual-add__price" data-price>{money.format(current.price)}</span>
         </li>
         {others.map((o) => (
           <li key={o.variantId} className="ritual-add__item">
@@ -47,7 +47,7 @@ export function CompleteRitual({ current, others, range, currency }: { current: 
               <span className="ritual-add__thumb">{o.image ? <Image src={o.image} alt="" width={112} height={112} sizes="56px" /> : null}</span>
               <span className="ritual-add__name">{o.title}</span>
             </label>
-            <span className="ritual-add__price">{money.format(o.price)}</span>
+            <span className="ritual-add__price" data-price>{money.format(o.price)}</span>
           </li>
         ))}
       </ul>
@@ -56,7 +56,7 @@ export function CompleteRitual({ current, others, range, currency }: { current: 
           <span>
             {count} {count === 1 ? "product" : "products"}
           </span>
-          <span>{money.format(total)}</span>
+          <span data-price>{money.format(total)}</span>
         </p>
         <button type="button" className="gl-btn gl-btn--secondary gl-btn--block" onClick={() => addMany([current.variantId, ...chosen.map((o) => o.variantId)])}>
           {count === 1 ? "Add to cart" : `Add all ${count} to cart`}

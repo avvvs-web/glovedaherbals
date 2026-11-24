@@ -3,6 +3,7 @@ import { formatMoney, type ShopProduct } from "@/lib/shop/data";
 import { shopUrl } from "@/lib/site";
 import { AddButton } from "./AddButton";
 import { Heart } from "./Heart";
+import { Price } from "@/components/shop/ui/Price";
 
 /** One product as a line in a list: photo, name, price, save, add. The Index is built from these. */
 export function ProductRow({ product, note }: { product: ShopProduct; note?: string }) {
@@ -17,7 +18,7 @@ export function ProductRow({ product, note }: { product: ShopProduct; note?: str
         </a>
         {note ? <span className="gx-row__note">{note}</span> : null}
       </span>
-      <span className="gx-row__price">{product.available ? formatMoney(v.price) : "Sold out"}</span>
+      <span className="gx-row__price"><Price>{product.available ? formatMoney(v.price) : "Sold out"}</Price></span>
       <Heart handle={product.handle} title={product.title} />
       <AddButton variantId={v.id} available={product.available} title={product.title} compact />
     </li>

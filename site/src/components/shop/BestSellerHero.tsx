@@ -8,6 +8,7 @@ import type { ShopImage } from "@/lib/shop/data";
 import { AddButton } from "./ui/AddButton";
 import { Icon } from "./ui/Icon";
 import { DUR, EASE } from "./ui/motion";
+import { Price } from "@/components/shop/ui/Price";
 
 export type HeroProduct = { handle: string; title: string; href: string; priceText: string; variantId: number; available: boolean; image?: ShopImage };
 
@@ -49,7 +50,7 @@ export function BestSellerHero({ products }: { products: HeroProduct[] }) {
             <AnimatePresence initial={false} mode="popLayout">
               <motion.div key={current.handle} className="gx-bs__text" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: DUR.base, ease: EASE }}>
                 <p className="gx-bs__name">{current.title}</p>
-                <p className="gx-bs__price">{current.priceText}</p>
+                <p className="gx-bs__price"><Price>{current.priceText}</Price></p>
               </motion.div>
             </AnimatePresence>
             <div className="gx-bs__actions">
@@ -69,7 +70,7 @@ export function BestSellerHero({ products }: { products: HeroProduct[] }) {
                 <button type="button" className="gx-bs__pick" aria-current={i === index} onClick={() => setIndex(i)}>
                   <span className="gx-bs__num">{String(i + 1).padStart(2, "0")}</span>
                   <span className="gx-bs__pickName">{p.title}</span>
-                  <span className="gx-bs__pickPrice">{p.priceText}</span>
+                  <span className="gx-bs__pickPrice"><Price>{p.priceText}</Price></span>
                   {i === index ? <span key={`${index}-${running}`} className="gx-bs__timer" data-running={running} style={{ animationDuration: `${HOLD}ms` }} /> : null}
                 </button>
               </li>

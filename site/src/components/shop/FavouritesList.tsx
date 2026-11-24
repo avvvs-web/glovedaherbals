@@ -5,6 +5,7 @@ import { useFavourites } from "@/lib/shop/favourites";
 import { AddButton } from "./ui/AddButton";
 import { EmptyState } from "./ui/EmptyState";
 import { Heart } from "./ui/Heart";
+import { Price } from "@/components/shop/ui/Price";
 
 export type FavouriteItem = { handle: string; title: string; href: string; priceText: string; variantId: number; available: boolean; image?: string };
 
@@ -31,7 +32,7 @@ export function FavouritesList({ items, browseHref }: { items: FavouriteItem[]; 
               {it.title}
             </a>
           </span>
-          <span className="gx-row__price">{it.priceText}</span>
+          <span className="gx-row__price"><Price>{it.priceText}</Price></span>
           <Heart handle={it.handle} title={it.title} />
           <AddButton variantId={it.variantId} available={it.available} title={it.title} compact />
         </li>

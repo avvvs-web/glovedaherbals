@@ -139,7 +139,7 @@ export default async function ProductPage({ params }: PageProps<"/shop/products/
           ) : null}
           {d.lede ? <p className="gx-pdp__lede">{d.lede}</p> : null}
           <p className="gx-pdp__priceRow">
-            <span className="gx-pdp__price">{price}</span>
+            <span className="gx-pdp__price" data-price>{price}</span>
             <span className="gx-pdp__stock" data-in={product.available}>
               {product.available ? "In stock" : "Sold out"}
             </span>
@@ -284,7 +284,7 @@ export default async function ProductPage({ params }: PageProps<"/shop/products/
             <hr className="gl-rule gl-rule--ornament" />
             <p className="gx-title">{d.closing}</p>
             <div className="gx-pdp__closingBuy">
-              <span className="gx-pdp__price">{price}</span>
+              <span className="gx-pdp__price" data-price>{price}</span>
               <AddButton variantId={variant.id} available={product.available} title={product.title} />
             </div>
           </Reveal>

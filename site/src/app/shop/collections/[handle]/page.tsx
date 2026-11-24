@@ -55,7 +55,7 @@ async function WholeRange() {
             <h2 id={`family-${s.handle}`} className="gx-title">
               {s.name}
             </h2>
-            <p className="gx-family__count">From {formatMoney(Math.min(...s.products.map((p) => p.price)))}</p>
+            <p className="gx-family__count" data-price>From {formatMoney(Math.min(...s.products.map((p) => p.price)))}</p>
             {s.handle !== "all" ? (
               <a className="gx-more" href={shopUrl(`/collections/${s.handle}`)}>
                 Only {s.name} <Icon name="arrow" size={18} />
@@ -105,7 +105,7 @@ export default async function CollectionPage({ params, searchParams }: PageProps
             {shown && !whole ? (
               <p className="gx-lead" role="status">
                 {shown.length} {shown.length === 1 ? "product" : "products"}
-                {shown.length ? `, from ${formatMoney(Math.min(...shown.map((p) => p.price)))}` : ""}
+                {shown.length ? <span data-price>, from {formatMoney(Math.min(...shown.map((p) => p.price)))}</span> : null}
               </p>
             ) : null}
             {!whole && shown ? (

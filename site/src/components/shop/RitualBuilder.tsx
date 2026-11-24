@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useCart } from "@/components/shop/Cart";
+import { Price } from "@/components/shop/ui/Price";
 
 export type BuilderOption = { variantId: number; title: string; price: number; priceText: string; available: boolean; image?: string };
 export type BuilderGroup = { id: string; title: string; options: BuilderOption[] };
@@ -37,7 +38,7 @@ export function RitualBuilder({ groups, currency }: { groups: BuilderGroup[]; cu
                   />
                   <span className="builder__thumb">{o.image ? <Image src={o.image} alt="" width={160} height={160} /> : null}</span>
                   <span className="builder__name">{o.title.replace(/^Gloveda /, "")}</span>
-                  <span className="builder__price">{o.available ? o.priceText : "Sold out"}</span>
+                  <span className="builder__price"><Price>{o.available ? o.priceText : "Sold out"}</Price></span>
                 </label>
               );
             })}
@@ -46,7 +47,13 @@ export function RitualBuilder({ groups, currency }: { groups: BuilderGroup[]; cu
       ))}
       <div className="builder__bar" role="status">
         <p className="builder__summary">
-          {chosen.length ? `${chosen.length} of ${groups.length} chosen, ${money.format(total)}` : "Choose one from each, or only the ones you want."}
+          {chosen.length ? (
+            <>
+              {chosen.length} of {groups.length} chosen<span data-price>, {money.format(total)}</span>
+            </>
+          ) : (
+            "Choose one from each, or only the ones you want."
+          )}
         </p>
         <button type="button" className="gl-btn" disabled={!chosen.length} onClick={() => addMany(chosen.map((o) => o.variantId))}>
           Add ritual to cart

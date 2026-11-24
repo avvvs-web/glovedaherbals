@@ -28,7 +28,7 @@ export async function RangeDoors() {
                 </span>
                 {list ? (
                   <span className="gx-range__note">
-                    {list.length} products{from !== null ? `, from ${formatMoney(from)}` : ""}
+                    {list.length} products{from !== null ? <span data-price>, from {formatMoney(from)}</span> : null}
                   </span>
                 ) : null}
               </a>

@@ -5,6 +5,7 @@ import { useId, useRef, useState } from "react";
 import type { ShopImage } from "@/lib/shop/data";
 import { useCart } from "./Cart";
 import { ProductGallery } from "./ProductGallery";
+import { Price } from "@/components/shop/ui/Price";
 
 export type QuickViewProduct = {
   title: string;
@@ -51,7 +52,7 @@ export function QuickView({ product }: { product: QuickViewProduct }) {
                 <h2 id={titleId} className="gl-h3 quick__title">
                   {product.title}
                 </h2>
-                <p className="pdp__price">{product.priceText}</p>
+                <p className="pdp__price"><Price>{product.priceText}</Price></p>
                 <p className="gl-small">{product.available ? "In stock" : "Sold out"}</p>
                 {product.summary ? <p className="gl-body quick__summary">{product.summary}</p> : null}
                 <div className="quick__actions">

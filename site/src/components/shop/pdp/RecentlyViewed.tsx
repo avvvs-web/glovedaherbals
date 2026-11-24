@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useSyncExternalStore } from "react";
+import { Price } from "@/components/shop/ui/Price";
 
 export type RecentItem = { handle: string; title: string; href: string; price: string; image?: string };
 
@@ -55,7 +56,7 @@ export function RecentlyViewed({ current, catalog }: { current: string; catalog:
               <a className="gx-recent__item" href={p.href}>
                 <span className="gx-recent__media">{p.image ? <Image src={p.image} alt="" width={320} height={400} sizes="(min-width: 64rem) 18vw, 44vw" /> : null}</span>
                 <span className="gx-recent__name">{p.title}</span>
-                <span className="gx-recent__price">{p.price}</span>
+                <span className="gx-recent__price"><Price>{p.price}</Price></span>
               </a>
             </li>
           ))}

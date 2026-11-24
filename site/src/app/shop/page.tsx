@@ -113,7 +113,7 @@ export default async function ShopHome() {
       </section>
 
       {affordable.length ? (
-        <section className="gx-band" aria-labelledby="under-title">
+        <section className="gx-band" aria-labelledby="under-title" data-price>
           <div className="gl-container gx-grid">
             <Reveal className="gx-col-4 gx-stack">
               <p className="gx-label">Easy to begin</p>
