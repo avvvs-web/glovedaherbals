@@ -484,9 +484,6 @@ html[data-header="hidden"]:not([data-nav="open"]) .shop-pill {
   .nav__logo img {
     margin: -6px -10px; /* centred here, so the clear space is trimmed evenly */
   }
-  .nav__end .nav__menu {
-    display: none;
-  }
   .nav__panelInner {
     padding: var(--space-7) var(--space-8) var(--space-8);
   }
@@ -2624,7 +2621,14 @@ html {
 }
 
 /* ---------- Markets ---------- */
-/* A market whose prices are not set in Shopify yet (see src/proxy.ts): every price on the site is hidden. */
-html[data-prices="hidden"] [data-price] {
+/* Visitors outside the countries the shop sells to (see src/proxy.ts) can read everything, but every
+   price and every way to buy (add to bag, the bag, checkout, the ritual builder) is hidden. */
+html[data-prices="hidden"] [data-price],
+html[data-prices="hidden"] [data-buy] {
   display: none !important;
+}
+@media (width < 48rem) {
+  html[data-prices="hidden"] .bottombar {
+    grid-template-columns: repeat(4, minmax(0, 1fr)); /* the bag has left the bar */
+  }
 }

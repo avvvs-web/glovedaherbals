@@ -2,14 +2,13 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Reveal } from "@/components/motion/Reveal";
-import { BannerHero } from "@/components/shop/BannerHero";
 import { BestSellerHero } from "@/components/shop/BestSellerHero";
 import { ConcernLinks } from "@/components/shop/ConcernLinks";
 import { RangeDoors } from "@/components/shop/RangeDoors";
 import { StoreDown } from "@/components/shop/ProductCard";
 import { Icon } from "@/components/shop/ui/Icon";
 import { ProductRow } from "@/components/shop/ui/ProductRow";
-import { formatMoney, getBanners, getCollectionProducts, getProducts } from "@/lib/shop/data";
+import { formatMoney, getCollectionProducts, getProducts } from "@/lib/shop/data";
 import { shopUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -27,7 +26,7 @@ const PROMISES = [
 const UNDER = 500;
 
 export default async function ShopHome() {
-  const [all, best, combos, banners] = await Promise.all([getProducts(), getCollectionProducts("best-sellers"), getCollectionProducts("gloveda-combo"), getBanners()]);
+  const [all, best, combos] = await Promise.all([getProducts(), getCollectionProducts("best-sellers"), getCollectionProducts("gloveda-combo")]);
   if (!all)
     return (
       <section className="gl-section shop-page">
@@ -44,11 +43,7 @@ export default async function ShopHome() {
   return (
     <>
       <section className="gx-hero theme-wine" aria-labelledby="shop-title">
-        {banners.length ? (
-          <div className="gx-hero__banner">
-            <BannerHero banners={banners.map((b) => ({ ...b, href: shopUrl(b.href as `/${string}`) }))} />
-          </div>
-        ) : null}
+        {/* The banner carousel was taken off this page (client, 2026-11-24). BannerHero and getBanners remain, unused. */}
         <div className="gl-container gx-hero__grid">
           <div className="gx-hero__text">
             <p className="gx-label">The Gloveda Herbals shop</p>

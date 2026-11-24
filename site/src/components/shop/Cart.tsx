@@ -283,7 +283,7 @@ export function CartProvider({
                     Shipping and taxes are worked out at checkout.
                   </p>
                   {buyable.length ? (
-                    <a className="gl-btn gl-btn--block" href={checkout}>
+                    <a className="gl-btn gl-btn--block" href={checkout} data-buy>
                       Check out
                     </a>
                   ) : (
@@ -304,7 +304,7 @@ export function CartProvider({
 export function CartButton() {
   const { count, open } = useCart();
   return (
-    <button type="button" className="nav__icon cart-button" onClick={open} aria-label={count ? `Bag, ${count} ${count === 1 ? "item" : "items"}` : "Bag, empty"}>
+    <button type="button" className="nav__icon cart-button" data-buy onClick={open} aria-label={count ? `Bag, ${count} ${count === 1 ? "item" : "items"}` : "Bag, empty"}>
       <Icon name="bag" />
       {count ? (
         <motion.span key={count} className="nav__count" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 500, damping: 24 }} aria-hidden="true">
@@ -331,6 +331,7 @@ export function AddToCart({
     <motion.button
       type="button"
       className={`gl-btn${small ? " gl-btn--sm gl-btn--secondary" : ""}`}
+      data-buy
       disabled={!available}
       onClick={() => add(variantId)}
       whileTap={available ? { scale: 0.97 } : undefined}

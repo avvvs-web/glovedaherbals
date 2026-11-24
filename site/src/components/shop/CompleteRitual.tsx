@@ -26,7 +26,7 @@ export function CompleteRitual({ current, others, range, currency }: { current: 
     });
 
   return (
-    <section className="ritual-add" aria-labelledby="ritual-add-title">
+    <section className="ritual-add" aria-labelledby="ritual-add-title" data-buy>
       <h2 id="ritual-add-title" className="pdp__head">
         Complete the ritual
       </h2>

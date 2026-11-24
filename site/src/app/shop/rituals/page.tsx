@@ -65,7 +65,7 @@ export default async function RitualsPage() {
       </section>
 
       {groups.length ? (
-        <section id="build" className="gl-section builder-section" aria-labelledby="build-title">
+        <section id="build" className="gl-section builder-section" aria-labelledby="build-title" data-buy>
           <div className="gl-container">
             <h2 id="build-title" className="gl-h2 section-title">
               Build your own ritual

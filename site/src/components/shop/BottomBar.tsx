@@ -26,7 +26,7 @@ export function BottomBar({ shopHref, searchHref, accountHref }: { shopHref: str
         <Icon name="account" />
         Account
       </a>
-      <button type="button" onClick={open}>
+      <button type="button" onClick={open} data-buy>
         <Icon name="bag" />
         Bag{count ? ` (${count})` : ""}
       </button>

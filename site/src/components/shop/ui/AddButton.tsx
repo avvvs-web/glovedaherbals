@@ -28,6 +28,7 @@ export function AddButton({ variantId, available, title, compact = false, label 
         type="button"
         className={compact ? "gx-add gx-add--compact" : "gl-btn gx-add"}
         data-added={added}
+        data-buy
         disabled={!available}
         onClick={press}
         whileTap={available ? { scale: 0.96 } : undefined}

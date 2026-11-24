@@ -8,19 +8,21 @@ import type { NextRequest } from "next/server";
 const SHOP_HOSTS = (process.env.SHOP_HOSTS ?? "shop.glovedaherbals.com").split(",").map((h) => h.trim().toLowerCase());
 
 /**
- * Markets without prices yet. Visitors from these countries see the whole site with every price hidden:
- * the prices in Shopify are India's, and the other market's are not set. The country comes from the
- * host's own header (Vercel sets it at the edge); a cookie carries the answer to the page, which hides
- * the prices before first paint. `?market=ae` (or any country code) overrides it, for checking.
+ * Where the shop sells today. Visitors from any other country can read the whole site, but every price
+ * and every way to buy is hidden: the prices in Shopify are India's, and other markets are not set up
+ * yet (see the international launch plan). The country comes from the host's own header (Vercel sets it
+ * at the edge); a cookie carries the answer to the page, which hides those parts before it is
+ * interactive. With no country known (local development) nothing is hidden. `?market=ae` (or any
+ * country code) overrides it, for checking.
  */
-const NO_PRICES = (process.env.PRICES_HIDDEN_IN ?? "AE").split(",").map((c) => c.trim().toUpperCase()).filter(Boolean);
+const SELLING_IN = (process.env.SELLING_IN ?? "IN").split(",").map((c) => c.trim().toUpperCase()).filter(Boolean);
 
 function withMarket(request: NextRequest, response: NextResponse) {
   const asked = request.nextUrl.searchParams.get("market");
   const country = (asked ?? request.headers.get("x-vercel-ip-country") ?? "").toUpperCase();
   // No country known (local development, or a later page after ?market=): keep what was decided before.
   if (!country) return response;
-  const value = NO_PRICES.includes(country) ? "hidden" : "shown";
+  const value = SELLING_IN.includes(country) ? "shown" : "hidden";
   if (asked) response.cookies.set("gl_market_test", "1", { path: "/", sameSite: "lax" });
   else if (request.cookies.get("gl_market_test")) return response; // a check in progress keeps its choice
   response.cookies.set("gl_prices", value, { path: "/", sameSite: "lax", maxAge: 60 * 60 * 24 });

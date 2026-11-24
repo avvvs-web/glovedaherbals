@@ -59,6 +59,7 @@ export function QuickView({ product }: { product: QuickViewProduct }) {
                   <button
                     type="button"
                     className="gl-btn"
+                    data-buy
                     disabled={!product.available}
                     onClick={() => {
                       close(); // the cart drawer opens in its place

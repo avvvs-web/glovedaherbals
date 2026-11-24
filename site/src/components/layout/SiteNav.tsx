@@ -17,7 +17,7 @@ export type SearchItem = { title: string; href: string; price: number; priceText
 type Props = { panel: NavPanel; links: NavLink[]; search: SearchItem[]; searchAction: string; shortcuts: NavLink[]; accountHref: string; wishlistHref: string; help: NavLink; shopAll: NavLink; actions?: ReactNode };
 
 /**
- * The navigation is a floating capsule: Shop and two plain links on the left, the Gloveda mark in the
+ * The navigation is a floating capsule: plain links on the left, the Gloveda mark in the
  * centre, then Help, search, the wishlist, account and the way into the store (or the bag, inside it). A gold line glides
  * between items as the pointer moves. Shop opens the one menu card under the capsule (click, not hover);
  * Escape or a click outside closes it and returns focus. Search opens over the page with results as you
@@ -77,21 +77,6 @@ export function SiteNav({ panel, links, search, searchAction, shortcuts, account
       <div ref={root} className="nav" onPointerLeave={() => setHover(null)}>
         <div className="nav__capsule glass">
           <ul className="nav__side" role="list">
-            <li>
-              <button
-                type="button"
-                className="nav__item"
-                aria-expanded={open === panel.id}
-                aria-controls="nav-panel"
-                onPointerEnter={() => setHover(panel.id)}
-                onFocus={() => setHover(panel.id)}
-                onBlur={() => setHover(null)}
-                onClick={(e) => toggle(panel.id, e.currentTarget)}
-              >
-                {panel.label}
-                {line(panel.id)}
-              </button>
-            </li>
             {links.map((l) => (
               <li key={l.name}>
                 <a className="nav__item" href={l.href} onPointerEnter={() => setHover(l.name)} onFocus={() => setHover(l.name)} onBlur={() => setHover(null)}>

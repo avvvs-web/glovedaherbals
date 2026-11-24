@@ -17,7 +17,7 @@ export function BuyBar({ watch, variantId, available, title, price }: { watch: s
     return () => io.disconnect();
   }, [watch]);
   return (
-    <div className="gx-buybar glass theme-wine" data-shown={shown} aria-hidden={!shown} inert={!shown}>
+    <div className="gx-buybar glass theme-wine" data-buy data-shown={shown} aria-hidden={!shown} inert={!shown}>
       <p className="gx-buybar__text">
         <span className="gx-buybar__name">{title}</span>
         <span className="gx-buybar__price" data-price>{price}</span>
