@@ -10,10 +10,11 @@ export const BRAND = "Gloveda Herbals";
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://glovedaherbals.com").replace(/\/$/, "");
 
 /**
- * Where the shop lives (client decision, 2026-11-22): the story site links out to the store at
- * shop.glovedaherbals.com, which keeps the store's existing paths.
+ * Where the shop lives. The client's decision (2026-11-22) is shop.glovedaherbals.com, which keeps the
+ * store's existing paths: set NEXT_PUBLIC_SHOP_ORIGIN to it once that address exists. Until then the
+ * shop is reached at /shop on whatever address the site itself is served from, so its links always work.
  */
-export const SHOP_ORIGIN = (process.env.NEXT_PUBLIC_SHOP_ORIGIN ?? "https://shop.glovedaherbals.com").replace(/\/$/, "");
+export const SHOP_ORIGIN = (process.env.NEXT_PUBLIC_SHOP_ORIGIN ?? "/shop").replace(/\/$/, "");
 
 /** Gloveda Experience, the brand's clinic and hospitality offering. */
 export const EXPERIENCE_URL = "https://glovedaexperience.com";

@@ -63,6 +63,7 @@ The store's reviews app is Loox. Product pages show the average score and count,
 1. Add the DNS record for `shop.glovedaherbals.com`, pointing at the site's host.
 2. Add the same hostname to the hosting project's domains.
 3. Keep `SHOP_HOSTS=shop.glovedaherbals.com` in the environment: requests to that host are served the shop pages.
+4. Only then set `NEXT_PUBLIC_SHOP_ORIGIN=https://shop.glovedaherbals.com` in the hosting project and redeploy. Until it is set, every shop link goes to `/shop` on the site's own address, so the shop works before the DNS record exists.
 
 ## 6. Content the store team controls
 
