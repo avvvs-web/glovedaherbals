@@ -35,6 +35,31 @@ const sentences = (s: string) => s.split(/(?<=[.!?])\s+(?=[A-Z{(])/).map((x) => 
 const isShort = (s: string, max: number) => s.length <= max && sentences(s).length === 1;
 const stop = (s: string) => (/[.!?:…]$/.test(s) ? s : `${s}.`);
 
+/** Names that keep their capital inside a sentence. */
+const PROPER = /^(Gloveda|Ayurved(a|ic)|Kumkumadi|Thailam|India|Kerala)/;
+
+/**
+ * The store writes some opening lines In Title Case ("Gentle Daily Cleanse. Deep, Mindful Care."). On the
+ * page they read as sentences, so those are set in sentence case: the first word of each sentence keeps
+ * its capital, as do brand and proper names and acronyms. Only the capitals change, never the words.
+ * Lines that are already sentences, and lists of product names ("Face Wash + Massage Oil"), are left alone.
+ */
+export function sentenceCase(line: string): string {
+  if (line.includes(" + ")) return line;
+  const words = line.split(/\s+/).filter((w) => /^[A-Za-z]{4,}/.test(w));
+  if (words.length < 3 || words.filter((w) => /^[A-Z]/.test(w)).length / words.length < 0.7) return line;
+  let start = true; // the next word opens a sentence
+  return line
+    .split(/(\s+)/)
+    .map((w) => {
+      if (!/[A-Za-z]/.test(w)) return w; // spaces, dashes, ampersands
+      const keep = start || PROPER.test(w) || /^[A-Z]{2,}/.test(w);
+      start = /[.!?]$/.test(w);
+      return keep ? w : w.charAt(0).toLowerCase() + w.slice(1);
+    })
+    .join("");
+}
+
 export function describe(description: string[]): Described {
   // The store's HTML sometimes runs a heading into its text ("How to Use:Day: …MoisturiserNight: …") and
   // lists several points on one line with ticks; give each its own line.
@@ -95,7 +120,7 @@ export function describe(description: string[]): Described {
   }
 
   // A short opening line stands on its own above the paragraph.
-  if (about.length > 1 && about[0].length <= 90) out.lede = about.shift();
+  if (about.length > 1 && about[0].length <= 90) out.lede = sentenceCase(about.shift() as string);
   // An unheaded run of short points (three or more) is a list of what the product does.
   if (!out.helps.length) {
     let start = -1;
