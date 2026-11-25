@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    // Production only: the site's CSS (about 25 KiB compressed) is written into each page as a <style>
+    // tag instead of three render-blocking <link> requests, so the first paint and the LCP image are
+    // not held up waiting for stylesheets. Trade-off: the CSS is not cached separately between pages.
+    inlineCss: true,
+  },
   // Development only: lets the local server be opened under the shop's own hostname (mapped to this
   // machine), to test what depends on that name, such as the reviews frame.
   allowedDevOrigins: ["shop.glovedaherbals.com"],
