@@ -15,6 +15,9 @@ import {
   type ReactNode,
 } from "react";
 import { Price } from "@/components/shop/ui/Price";
+import { ProgressLine } from "@/components/shop/ui/ProgressLine";
+import { FREE_SHIPPING_FROM } from "@/content/policies";
+import { track, type TrackItem } from "@/lib/analytics";
 
 /** What the cart needs to know about a variant; always taken from the live catalogue, never stored. */
 export type CartVariant = {
@@ -72,6 +75,8 @@ const subscribe = (l: () => void) => {
   };
 };
 
+const item = (v: CartVariant, quantity: number): TrackItem => ({ item_id: String(v.id), item_name: v.title, price: v.price, quantity });
+
 type Props = {
   variants: CartVariant[];
   checkoutBase: string;
@@ -127,29 +132,33 @@ export function CartProvider({
       const v = byId.get(String(id));
       if (!v || !v.available) return;
       set(id, (lines[String(id)] ?? 0) + qty);
+      track("add_to_cart", [item(v, qty)], currency);
       setStatus(`${v.title} added to your cart`);
       open();
     },
-    [byId, lines, set, open],
+    [byId, lines, set, open, currency],
   );
 
   const addMany = useCallback(
     (ids: number[]) => {
       const next = { ...lines };
-      let added = 0;
+      const items: TrackItem[] = [];
       for (const id of ids) {
-        if (!byId.get(String(id))?.available) continue;
+        const v = byId.get(String(id));
+        if (!v?.available) continue;
         next[String(id)] = Math.min((next[String(id)] ?? 0) + 1, 20);
-        added++;
+        items.push(item(v, 1));
       }
+      const added = items.length;
       if (!added) return;
       write(next);
+      track("add_to_cart", items, currency);
       setStatus(
         `${added} ${added === 1 ? "product" : "products"} added to your cart`,
       );
       open();
     },
-    [byId, lines, open],
+    [byId, lines, open, currency],
   );
 
   const entries = Object.entries(lines).map(([id, qty]) => ({
@@ -210,6 +219,11 @@ export function CartProvider({
                 Close
               </button>
             </header>
+            <ol className="cart-steps" aria-label="Checkout steps">
+              <li aria-current="step">Bag</li>
+              <li>Delivery details</li>
+              <li>Payment</li>
+            </ol>
             {entries.length === 0 ? (
               <p className="gl-body cart__empty">
                 Your bag is empty. Add a product and it will appear here.
@@ -275,6 +289,16 @@ export function CartProvider({
                   ))}
                 </ul>
                 <footer className="cart__foot">
+                  {/* The free-shipping threshold is in rupees, so the line is shown only for INR prices. */}
+                  {currency === "INR" ? (
+                    <div data-price>
+                      <ProgressLine value={subtotal / FREE_SHIPPING_FROM}>
+                        {subtotal > FREE_SHIPPING_FROM
+                          ? "Your order ships free."
+                          : `Add ${money.format(FREE_SHIPPING_FROM - subtotal + 1)} more for free shipping.`}
+                      </ProgressLine>
+                    </div>
+                  ) : null}
                   <p className="cart__subtotal" data-price>
                     <span>Subtotal</span>
                     <span>{money.format(subtotal)}</span>
@@ -283,7 +307,12 @@ export function CartProvider({
                     Shipping and taxes are worked out at checkout.
                   </p>
                   {buyable.length ? (
-                    <a className="gl-btn gl-btn--block" href={checkout} data-buy>
+                    <a
+                      className="gl-btn gl-btn--block"
+                      href={checkout}
+                      data-buy
+                      onClick={() => track("begin_checkout", buyable.map((e) => item(e.v, e.qty)), currency)}
+                    >
                       Check out
                     </a>
                   ) : (

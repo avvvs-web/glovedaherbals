@@ -7,6 +7,7 @@ import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { RangeDoors } from "@/components/shop/RangeDoors";
 import { ExperiencePartners } from "@/components/sections/ExperiencePartners";
 import { OurStory } from "@/components/sections/OurStory";
+import { WhatsAppButton } from "@/components/shop/WhatsAppButton";
 import { SiteJsonLd } from "@/lib/seo";
 import { shopUrl } from "@/lib/site";
 
@@ -48,8 +49,8 @@ const chapters: Chapter[] = [
     from: 0,
     to: 44,
     h1: true,
-    title: "Gloveda: Ayurvedic Skincare & Hair Care",
-    body: "Rituals for skin and hair, 105 years in the making.",
+    title: "A century of care, perfected for you.",
+    body: "Gloveda Ayurvedic skincare and hair care, 105 years in the making.",
     cta: { label: "Shop the collection", href: shopUrl("/collections/all") },
   },
   {
@@ -145,6 +146,7 @@ export default function Home() {
         </section>
       </main>
       <SiteFooter />
+      <WhatsAppButton />
       <SiteJsonLd />
     </>
   );

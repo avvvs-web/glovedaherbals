@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { CookieSettingsLink } from "@/components/tracking/CookieConsent";
 import { COMPANY, policies } from "@/content/policies";
 import { collections, EXPERIENCE_URL, shopUrl, social } from "@/lib/site";
 
@@ -31,7 +32,7 @@ const columns = [
   },
   {
     title: "Help",
-    links: [{ name: "Help centre", href: shopUrl("/help") }, ...policies.map((p) => ({ name: p.title, href: shopUrl(`/policies/${p.handle}`) })), { name: "Contact us", href: shopUrl("/help#contact") }],
+    links: [{ name: "Track your order", href: shopUrl("/track") }, { name: "Help centre", href: shopUrl("/help") }, ...policies.map((p) => ({ name: p.title, href: shopUrl(`/policies/${p.handle}`) })), { name: "Contact us", href: shopUrl("/help#contact") }],
   },
 ];
 
@@ -110,7 +111,7 @@ export function SiteFooter() {
           ))}
         </ul>
         <p className="gl-small">
-          © {year} Gloveda Herbals. {COMPANY.name}, {COMPANY.registeredOffice}.
+          © {year} Gloveda Herbals. {COMPANY.name}, {COMPANY.registeredOffice}. <CookieSettingsLink className="site-footer__cookies" />
         </p>
         <a className="site-footer__link" href="#top">
           Back to top

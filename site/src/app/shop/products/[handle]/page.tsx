@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Reveal } from "@/components/motion/Reveal";
 import { CompleteRitual, type RitualItem } from "@/components/shop/CompleteRitual";
 import { BuyBar } from "@/components/shop/pdp/BuyBar";
+import { BuyNow, NotifyMe, ViewItem } from "@/components/shop/pdp/BuyNow";
 import { ReadMore } from "@/components/shop/pdp/ReadMore";
 import { Reviews } from "@/components/shop/pdp/Reviews";
 import { RecentlyViewed } from "@/components/shop/pdp/RecentlyViewed";
@@ -14,7 +15,7 @@ import { Icon } from "@/components/shop/ui/Icon";
 import { ProductRow } from "@/components/shop/ui/ProductRow";
 import { Stars } from "@/components/shop/ui/Stars";
 import { concerns, matchConcern } from "@/lib/shop/concerns";
-import { formatMoney, getCollectionProducts, getProduct, getProducts, type ShopProduct } from "@/lib/shop/data";
+import { CHECKOUT_BASE, formatMoney, getCollectionProducts, getProduct, getProducts, type ShopProduct } from "@/lib/shop/data";
 import { describe } from "@/lib/shop/describe";
 import { getRating, LOOX_ID, LOOX_SHOP, REVIEWS_HOST } from "@/lib/shop/reviews";
 import { collections, shopUrl } from "@/lib/site";
@@ -86,6 +87,7 @@ export default async function ProductPage({ params }: PageProps<"/shop/products/
   const reviewsLabel = rating ? `${rating.count} ${rating.count === 1 ? "review" : "reviews"}` : "";
   const d = describe(product.description);
   const price = formatMoney(variant.price);
+  const currency = process.env.SHOPIFY_CURRENCY ?? "INR";
   // Concerns this product's own description speaks to (the same rule as the Shop by concern pages).
   const speaksTo = concerns.filter((c) => matchConcern(c, [product]).length > 0);
   // A set's contents, linked to the products themselves where the store sells them singly.
@@ -148,6 +150,13 @@ export default async function ProductPage({ params }: PageProps<"/shop/products/
           <div className="gx-pdp__buy" id="pdp-buy">
             <AddButton variantId={variant.id} available={product.available} title={product.title} />
             <Heart handle={product.handle} title={product.title} />
+          </div>
+          <div className="pdp-buy2">
+            {product.available ? (
+              <BuyNow checkoutBase={CHECKOUT_BASE} variantId={variant.id} title={product.title} price={variant.price} currency={currency} />
+            ) : (
+              <NotifyMe title={product.title} />
+            )}
           </div>
           <ul className="gx-pdp__trust" role="list">
             {TRUST.map((t) => (
@@ -315,6 +324,7 @@ export default async function ProductPage({ params }: PageProps<"/shop/products/
       </section>
 
       <RecentlyViewed current={product.handle} catalog={catalog} />
+      <ViewItem variantId={variant.id} title={product.title} price={variant.price} currency={currency} category={place.range?.name} />
       <BuyBar watch="pdp-buy" variantId={variant.id} available={product.available} title={product.title} price={price} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
     </article>

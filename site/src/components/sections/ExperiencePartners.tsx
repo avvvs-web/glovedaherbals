@@ -26,7 +26,7 @@ export function ExperiencePartners() {
             Where heritage meets high‑end hospitality
           </h2>
           <p className="experience__intro">
-            A century of Ayurvedic wisdom as a luxury sensory experience, tailored for five-star properties and wellness destinations.
+            105 years of Ayurvedic wisdom as a luxury sensory experience, tailored for five-star properties and wellness destinations.
           </p>
         </Reveal>
 

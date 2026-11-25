@@ -19,6 +19,9 @@ export const COMPANY = {
   grievanceOfficer: { name: "Dr. Rekha K.C", email: "pm@avvvs.com", phone: "+91 80892 02091" },
 };
 
+/** Orders above this amount (INR) ship free; from the live home page and the shipping policy. */
+export const FREE_SHIPPING_FROM = 499;
+
 const UPDATED = "22 November 2026";
 const contact: PolicySection = {
   heading: "Contact us",
@@ -39,7 +42,7 @@ export const policies: Policy[] = [
           "The estimate can vary a little from state to state.",
         ],
       },
-      { heading: "Shipping charges", body: ["Shipping is free on orders above ₹499. Any shipping charge for smaller orders is shown at checkout before you pay."] },
+      { heading: "Shipping charges", body: [`Shipping is free on orders above ₹${FREE_SHIPPING_FROM}. Any shipping charge for smaller orders is shown at checkout before you pay.`] },
       {
         heading: "Delays",
         body: [
@@ -135,6 +138,7 @@ export const policies: Policy[] = [
         heading: "Cookies",
         body: [
           "This site keeps your cart in your browser's storage. The checkout, run by Shopify, uses cookies that are necessary to take your order. You can clear or block these in your browser settings, though the cart and checkout may then not work.",
+          "With your permission, given in the cookie banner, we also use analytics and advertising cookies: Google Tag Manager and Google Analytics, to understand how the site is used; Microsoft Clarity, to see how pages are used; and the Meta Pixel, to measure our advertising. None of these load unless you choose Accept. You can change your choice at any time from the Cookie settings link at the foot of every page.",
         ],
       },
       {
@@ -154,7 +158,7 @@ export const policies: Policy[] = [
       contact,
     ],
     confirm: [
-      "Whether any analytics, advertising pixels or marketing email will run on the new site. The policy currently says none do; it must change if they are added.",
+      "The Cookies section now names Google Tag Manager, Google Analytics, Microsoft Clarity and the Meta Pixel, which load only after consent. Confirm this list matches the tags actually set up in Tag Manager, and whether marketing email or WhatsApp messages will be sent.",
       "The Grievance Officer's name, email and phone, taken from the existing policy.",
       "How long order records are kept.",
       "A legal review against India's Digital Personal Data Protection Act.",

@@ -7,7 +7,7 @@
 export type Searchable = { title: string; href: string; price: number; priceText: string; image?: string; range: string; text: string };
 export type SearchResult = { items: Searchable[]; understood: string | null; loose: boolean };
 
-const SAME: Record<string, string> = { moisturiser: "moisturizer", moisturisers: "moisturizer", facewash: "face wash", gift: "combo", gifts: "combo", gifting: "combo", set: "combo", sets: "combo", kit: "combo", kits: "combo", skin: "face", skincare: "face", haircare: "hair", oils: "oil" };
+const SAME: Record<string, string> = { moisturiser: "moisturizer", moisturisers: "moisturizer", facewash: "face wash", gift: "combo", gifts: "combo", gifting: "combo", set: "combo", sets: "combo", kit: "combo", kits: "combo", skin: "face", skincare: "face", haircare: "hair", oils: "oil", pimple: "acne", pimples: "acne", breakout: "acne", breakouts: "acne", hairfall: "hair fall", dandruf: "dandruff", glowing: "glow", radiance: "glow", tanning: "tan", wrinkle: "wrinkles", ageing: "aging", antiaging: "aging", cleanser: "wash", shampo: "shampoo", tailam: "thailam", thylam: "thailam" };
 const SKIP = new Set(["for", "the", "a", "an", "and", "my", "me", "with", "of", "to", "in", "rs", "inr", "products", "product", "something", "best"]);
 
 /** Edit distance, stopping early once it passes 1. */

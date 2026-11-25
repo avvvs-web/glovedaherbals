@@ -3,6 +3,8 @@ import { EaseIn } from "@/components/motion/EaseIn";
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import "../styles/extras.css";
+import { CookieConsent } from "@/components/tracking/CookieConsent";
 import { BRAND, SITE_NAME, SITE_URL } from "@/lib/site";
 
 const marcellus = localFont({
@@ -36,6 +38,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </Script>
         {children}
         <EaseIn />
+        <CookieConsent />
       </body>
     </html>
   );

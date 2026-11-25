@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { BottomBar } from "@/components/shop/BottomBar";
+import { WhatsAppButton } from "@/components/shop/WhatsAppButton";
 import { CartButton, CartProvider, type CartVariant } from "@/components/shop/Cart";
 import { CHECKOUT_BASE, formatMoney, getProducts } from "@/lib/shop/data";
 import { SHOP_ORIGIN, shopUrl } from "@/lib/site";
@@ -34,6 +35,7 @@ export default async function ShopLayout({ children }: LayoutProps<"/shop">) {
         {children}
       </main>
       <SiteFooter />
+      <WhatsAppButton />
       <BottomBar shopHref={shopUrl("/collections/all")} searchHref={shopUrl("/search")} accountHref={shopUrl("/account")} />
     </CartProvider>
   );
