@@ -2,11 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { AnimatePresence, MotionConfig, motion } from "motion/react";
+import { AnimatePresence, LazyMotion, MotionConfig } from "motion/react";
+import * as m from "motion/react-m";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Icon } from "@/components/shop/ui/Icon";
 import { useFavourites } from "@/lib/shop/favourites";
 import { SearchOverlay } from "./SearchOverlay";
+
+/** Motion's features arrive after the page is interactive; see components/motion/lazy-features. */
+const loadFeatures = () => import("@/components/motion/lazy-features").then((r) => r.default);
 
 export type NavLink = { name: string; href: string };
 export type NavGroup = { title: string; links: NavLink[] };
@@ -70,10 +74,11 @@ export function SiteNav({ panel, links, search, searchAction, shortcuts, account
   };
   const tiles = panel.tiles ?? [];
   const active = hover ?? open;
-  const line = (id: string) => (active === id ? <motion.span layoutId="nav-line" className="nav__line" transition={{ type: "spring", stiffness: 420, damping: 36 }} /> : null);
+  const line = (id: string) => (active === id ? <m.span layoutId="nav-line" className="nav__line" transition={{ type: "spring", stiffness: 420, damping: 36 }} /> : null);
 
   return (
     <MotionConfig reducedMotion="user">
+      <LazyMotion features={loadFeatures}>
       <div ref={root} className="nav" onPointerLeave={() => setHover(null)}>
         <div className="nav__capsule glass">
           <ul className="nav__side" role="list">
@@ -127,7 +132,7 @@ export function SiteNav({ panel, links, search, searchAction, shortcuts, account
 
         <AnimatePresence>
           {open ? (
-            <motion.div
+            <m.div
               id="nav-panel"
               key="panel"
               className="nav__panel glass theme-plum"
@@ -140,19 +145,19 @@ export function SiteNav({ panel, links, search, searchAction, shortcuts, account
                 {tiles.length ? (
                   <ul className="nav__tiles" role="list">
                     {tiles.map((t, i) => (
-                      <motion.li key={t.name} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.04 + i * 0.06, ease: [0.16, 1, 0.3, 1] }}>
+                      <m.li key={t.name} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.04 + i * 0.06, ease: [0.16, 1, 0.3, 1] }}>
                         <a className="nav__tile" href={t.href}>
                           <span className="nav__tileMedia">{t.image ? <Image src={t.image} alt="" width={320} height={400} sizes="(min-width: 68rem) 16rem, 30vw" /> : null}</span>
                           <span className="nav__tileName">{t.name}</span>
                           {t.note ? <span className="nav__tileNote">{t.note}</span> : null}
                         </a>
-                      </motion.li>
+                      </m.li>
                     ))}
                   </ul>
                 ) : null}
                 <div className="nav__groups">
                   {panel.groups.map((g, i) => (
-                    <motion.div
+                    <m.div
                       key={g.title}
                       className="nav__group"
                       initial={{ opacity: 0, y: 10 }}
@@ -169,7 +174,7 @@ export function SiteNav({ panel, links, search, searchAction, shortcuts, account
                           </li>
                         ))}
                       </ul>
-                    </motion.div>
+                    </m.div>
                   ))}
                   {actions ? null : (
                     <a className="gl-btn nav__enter" href={shopAll.href}>
@@ -179,11 +184,12 @@ export function SiteNav({ panel, links, search, searchAction, shortcuts, account
                   )}
                 </div>
               </div>
-            </motion.div>
+            </m.div>
           ) : null}
         </AnimatePresence>
       </div>
       <SearchOverlay open={searching} onClose={() => setSearching(false)} items={search} action={searchAction} shortcuts={shortcuts} />
+      </LazyMotion>
     </MotionConfig>
   );
 }

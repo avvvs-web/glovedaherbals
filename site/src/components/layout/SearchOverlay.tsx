@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "motion/react";
+import * as m from "motion/react-m";
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { Icon } from "@/components/shop/ui/Icon";
 import { smartSearch } from "@/lib/shop/smart-search";
@@ -77,7 +77,7 @@ export function SearchOverlay({ open, onClose, items, action, shortcuts }: { ope
       onClick={(e) => e.target === e.currentTarget && dialog.current?.close()}
     >
       {open ? (
-        <motion.div className="search__inner" initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}>
+        <m.div className="search__inner" initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}>
           <form className="search__form" action={action} role="search" onSubmit={keep}>
             <Icon name="search" size={22} />
             <input className="search__input" name="q" type="text" enterKeyHint="search" value={q} onChange={(e) => setQ(e.currentTarget.value)} placeholder="Try “face wash” or “hair under 500”" aria-label="Search products" autoComplete="off" autoFocus />
@@ -131,7 +131,7 @@ export function SearchOverlay({ open, onClose, items, action, shortcuts }: { ope
                     {result.understood || result.loose ? <p className="gl-small search__note">{result.loose ? "No product matches every word, so these match some of them" : "Showing products"}{result.understood ? ` ${result.understood}` : ""}.</p> : null}
                     <ul className="search__results" role="list">
                       {result.items.map((r, i) => (
-                        <motion.li key={r.href} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: i * 0.03 }}>
+                        <m.li key={r.href} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: i * 0.03 }}>
                           <a className="search__result" href={r.href} onClick={keep}>
                             <span className="gx-row__thumb">{r.image ? <Image src={r.image} alt="" width={128} height={160} sizes="56px" /> : null}</span>
                             <span className="search__name">
@@ -140,7 +140,7 @@ export function SearchOverlay({ open, onClose, items, action, shortcuts }: { ope
                             </span>
                             <span className="gx-row__price"><Price>{r.priceText}</Price></span>
                           </a>
-                        </motion.li>
+                        </m.li>
                       ))}
                     </ul>
                   </>
@@ -150,7 +150,7 @@ export function SearchOverlay({ open, onClose, items, action, shortcuts }: { ope
               </>
             )}
           </div>
-        </motion.div>
+        </m.div>
       ) : null}
     </dialog>
   );

@@ -174,3 +174,22 @@
 .cart__inner:has(> .cart-steps) {
   grid-template-rows: auto auto 1fr auto;
 }
+
+/* ---------- Reveal: a block fades up 16px once as it scrolls into view (components/motion/Reveal) ---------- */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity var(--duration-reveal) var(--ease-enter) var(--reveal-delay, 0s),
+    transform var(--duration-reveal) var(--ease-enter) var(--reveal-delay, 0s);
+}
+[data-reveal][data-shown="true"] {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}

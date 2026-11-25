@@ -251,14 +251,17 @@ export function ScrollFilm({ chapters }: Props) {
       const need = new Set<number>([here]);
       for (let i = 0; i < FRAMES; i += 16) need.add(i);
       for (let i = here; i <= Math.min(FRAMES - 1, here + 64); i += 8) need.add(i);
+      // The loader waits only for the opening itself: the frame on screen and every 8th frame of the next
+      // 32. The rest of the start set keeps arriving behind the page.
+      const wait = new Set<number>([...need].filter((i) => i >= here && i <= here + 32));
       let got = 0;
       s.onFrame = (i) => {
-        if (need.delete(i)) filmLoad.set(++got / (got + need.size));
+        if (wait.delete(i)) filmLoad.set(++got / (got + wait.size));
       };
       // Only those, until the visitor shows they are here to watch: the rest of the film (19 MB at 720p,
       // 39 MB at 1080p) is fetched from the first scroll, touch, click or key press. A visitor who never
       // scrolls the film never downloads it.
-      s.start([here, ...[...need].filter((i) => i !== here)], { only: true });
+      s.start([here, ...[...wait].filter((i) => i !== here), ...[...need].filter((i) => !wait.has(i) && i !== here)], { only: true });
       if (here > 0 || engaged) s.more();
     });
     const ro = new ResizeObserver(() => {

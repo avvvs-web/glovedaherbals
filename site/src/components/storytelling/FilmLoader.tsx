@@ -3,10 +3,15 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { filmLoad } from "@/lib/film-load";
 
-/** The longest the loader will hold the page, however slow the connection. The film then sharpens as it plays. */
-const MAX_WAIT = 9000;
+/**
+ * The longest the loader will hold the page, however slow the connection. The film then sharpens as it
+ * plays. Kept short: everything the loader shows counts against the page's Speed Index.
+ */
+const MAX_WAIT = 4000;
 /** Long enough to read as a moment rather than a flicker. */
-const MIN_SHOW = 1400;
+const MIN_SHOW = 600;
+/** How long the sun takes to open out once the film is ready (matches the CSS). */
+const LEAVE = 500;
 const LINES: [number, string][] = [
   [0, "Folding the paper"],
   [0.4, "Lighting the dawn"],
@@ -77,7 +82,7 @@ export function FilmLoader() {
   }, [ready]);
   useEffect(() => {
     if (phase !== "leaving") return;
-    const b = window.setTimeout(() => setPhase("gone"), 1100);
+    const b = window.setTimeout(() => setPhase("gone"), LEAVE);
     return () => window.clearTimeout(b);
   }, [phase]);
 
