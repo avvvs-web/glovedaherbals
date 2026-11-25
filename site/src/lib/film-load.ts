@@ -3,8 +3,8 @@
 /**
  * How much of the opening film is ready, shared between the film (which loads the frames) and the
  * loader (which waits for them). `progress` runs 0 to 1 over the frames the film needs to start playing
- * smoothly: every 16th frame of the whole film, and every 4th frame of its opening passage. The remaining
- * frames keep arriving behind the page after that.
+ * smoothly: every 16th frame of the whole film, and every 8th frame of its opening passage. The remaining
+ * frames are fetched once the visitor first scrolls, touches or presses a key.
  */
 export type FilmLoad = { progress: number; done: boolean };
 const START: FilmLoad = { progress: 0, done: false };

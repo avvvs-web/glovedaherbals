@@ -142,12 +142,17 @@ type Props = { chapters: Chapter[] };
  * The film plays through to the gold keyline and logo.
  * Without JavaScript, or with reduced motion, the same content reads as a still page.
  */
+/** Any of these means the visitor is engaging with the page, so the whole film is worth fetching. */
+const EVENTS = ["scroll", "wheel", "touchstart", "pointerdown", "keydown"] as const;
+
 export function ScrollFilm({ chapters }: Props) {
   const root = useRef<HTMLDivElement>(null);
   const film = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const seq = useRef<FrameSequence | null>(null);
   const state = useRef({ base: 0, frame: 0, drawn: -2, moved: 0, focus: -1 });
+  // The film box's size, kept by the ResizeObserver so drawing never reads layout (no forced reflow).
+  const dims = useRef({ w: 0, h: 0 });
 
   const draw = useCallback(() => {
     const c = canvas.current;
@@ -157,8 +162,10 @@ export function ScrollFilm({ chapters }: Props) {
     const ctx = c.getContext("2d");
     if (!ctx) return;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const w = Math.round(box.clientWidth * dpr);
-    const h = Math.round(box.clientHeight * dpr);
+    if (!dims.current.w) dims.current = { w: box.clientWidth, h: box.clientHeight };
+    const cssW = dims.current.w;
+    const w = Math.round(cssW * dpr);
+    const h = Math.round(dims.current.h * dpr);
     if (c.width !== w || c.height !== h) {
       c.width = w;
       c.height = h;
@@ -167,7 +174,7 @@ export function ScrollFilm({ chapters }: Props) {
     // the fraction's opacity, so slow scrolling glides instead of stepping from frame to frame.
     const key = Math.max(0, Math.min(FRAMES - 1, state.current.frame));
     const near = Math.round(key);
-    const wide = box.clientWidth >= 768 && w / h >= 1.2; // matches the CSS: wide screens get the film edge to edge
+    const wide = cssW >= 768 && w / h >= 1.2; // matches the CSS: wide screens get the film edge to edge
     const r = wide ? wideRect(w, h, key) : uprightRect(w, h, key);
     if (near !== state.current.focus) {
       // Keep the frames around this one decoded, at the width they are drawn (in steps, so a slow zoom does not restart it).
@@ -219,6 +226,13 @@ export function ScrollFilm({ chapters }: Props) {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const upright = !(box.clientWidth >= 768 && box.clientWidth / box.clientHeight >= 1.2);
     const size = coverRect(box.clientWidth * dpr, box.clientHeight * dpr).w > 1280 ? "lg" : "sm";
+    let engaged = false;
+    const engage = () => {
+      engaged = true;
+      seq.current?.more();
+      EVENTS.forEach((e) => window.removeEventListener(e, engage));
+    };
+    EVENTS.forEach((e) => window.addEventListener(e, engage, { passive: true, once: true }));
     supportsAvif().then((avif) => {
       if (cancelled) return;
       const fmt: SequenceFormat = avif ? "avif" : "webp";
@@ -230,22 +244,32 @@ export function ScrollFilm({ chapters }: Props) {
       };
       seq.current = s;
       // What the film needs before it can play smoothly from where the page opens: the frame on screen,
-      // every 16th frame of the whole film (so any scroll position has a picture), and every 4th frame of
-      // the passage ahead. These are fetched first and the loader counts them; the rest follow behind.
+      // every 16th frame of the whole film (so any scroll position has a picture), and every 8th frame of
+      // the passage ahead (its frames are the heaviest, about 250 KB each at 1080p; the frames between
+      // are blended over until they arrive). These are fetched first and the loader counts them; the rest follow behind.
       const here = Math.round(state.current.frame);
       const need = new Set<number>([here]);
       for (let i = 0; i < FRAMES; i += 16) need.add(i);
-      for (let i = here; i <= Math.min(FRAMES - 1, here + 64); i += 4) need.add(i);
+      for (let i = here; i <= Math.min(FRAMES - 1, here + 64); i += 8) need.add(i);
       let got = 0;
       s.onFrame = (i) => {
         if (need.delete(i)) filmLoad.set(++got / (got + need.size));
       };
-      s.start([here, ...[...need].filter((i) => i !== here)]);
+      // Only those, until the visitor shows they are here to watch: the rest of the film (19 MB at 720p,
+      // 39 MB at 1080p) is fetched from the first scroll, touch, click or key press. A visitor who never
+      // scrolls the film never downloads it.
+      s.start([here, ...[...need].filter((i) => i !== here)], { only: true });
+      if (here > 0 || engaged) s.more();
     });
-    const ro = new ResizeObserver(() => requestAnimationFrame(draw));
+    const ro = new ResizeObserver(() => {
+      // Layout is already done when the observer runs, so reading the size here costs nothing extra.
+      dims.current = { w: box.clientWidth, h: box.clientHeight };
+      requestAnimationFrame(draw);
+    });
     ro.observe(box);
     return () => {
       cancelled = true;
+      EVENTS.forEach((e) => window.removeEventListener(e, engage));
       ro.disconnect();
       seq.current?.dispose();
     };

@@ -60,34 +60,50 @@ export class FrameSequence {
     return out;
   }
 
-  /** Fetch `first` frames immediately (e.g. the frame on screen), then the rest coarse-to-fine. */
+  private queue: number[] = [];
+  private active = 0;
+  private first = new Set<number>();
+
+  /**
+   * Fetch `first` frames immediately (e.g. the frame on screen), then the rest coarse-to-fine. With
+   * `only`, just `first` is fetched until `more()` is called.
+   */
   start(first: number[] = [0], opts: { only?: boolean } = {}) {
     if (this.started) return;
     this.started = true;
-    const queue = opts.only ? [...first] : [...first, ...this.order().filter((i) => !first.includes(i))];
-    let active = 0;
-    const next = () => {
-      while (!this.cancelled && active < this.concurrency && queue.length) {
-        const i = queue.shift() as number;
-        if (this.blobs[i]) continue;
-        active++;
-        fetch(this.url(i))
-          .then((r) => (r.ok ? r.blob() : Promise.reject(new Error(`frame ${i} failed`))))
-          .then((blob) => {
-            if (this.cancelled) return;
-            this.blobs[i] = blob;
-            this.onFrame?.(i);
-            if (i % SPARSE.every === 0 || i === this.count - 1 || first.includes(i)) this.keep(i, blob);
-            if (i >= this.lo && i <= this.hi) this.pump();
-          })
-          .catch(() => {})
-          .finally(() => {
-            active--;
-            next();
-          });
-      }
-    };
-    next();
+    this.first = new Set(first);
+    this.queue = opts.only ? [...first] : [...first, ...this.order().filter((i) => !this.first.has(i))];
+    this.next();
+  }
+
+  /** Queue every frame not fetched or queued yet, coarse-to-fine, behind what is already waiting. */
+  more() {
+    if (!this.started || this.cancelled) return;
+    const queued = new Set(this.queue);
+    for (const i of this.order()) if (!this.blobs[i] && !queued.has(i)) this.queue.push(i);
+    this.next();
+  }
+
+  private next() {
+    while (!this.cancelled && this.active < this.concurrency && this.queue.length) {
+      const i = this.queue.shift() as number;
+      if (this.blobs[i]) continue;
+      this.active++;
+      fetch(this.url(i))
+        .then((r) => (r.ok ? r.blob() : Promise.reject(new Error(`frame ${i} failed`))))
+        .then((blob) => {
+          if (this.cancelled) return;
+          this.blobs[i] = blob;
+          this.onFrame?.(i);
+          if (i % SPARSE.every === 0 || i === this.count - 1 || this.first.has(i)) this.keep(i, blob);
+          if (i >= this.lo && i <= this.hi) this.pump();
+        })
+        .catch(() => {})
+        .finally(() => {
+          this.active--;
+          this.next();
+        });
+    }
   }
 
   /** Decode a small copy of a frame and keep it for the session. */
