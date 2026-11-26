@@ -47,7 +47,7 @@ export default async function ConcernPage({ params }: PageProps<"/shop/concerns/
             {concern.name}
           </h1>
           <p className="gx-lead">
-            {matches.length} {matches.length === 1 ? "product speaks" : "products speak"} to this in Gloveda Herbals&rsquo; own description. The line under each is quoted from it.
+            {matches.length} {matches.length === 1 ? "product speaks" : "products speak"} to this in Gloveda Herbals&rsquo; own description. The line under each is in Gloveda Herbals&rsquo; own words.
           </p>
         </header>
         <div className="gx-col-8 gx-stack" style={{ justifyItems: "stretch", gap: "var(--space-8)" }}>
