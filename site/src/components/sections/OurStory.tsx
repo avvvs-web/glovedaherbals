@@ -32,7 +32,7 @@ export function OurStory() {
         <Reveal className="story__lead">
           <p className="story__name">Our story</p>
           <h2 id="our-story-title" className="story__title">
-            The Vaidyars behind 105 years
+            The Vaidyars who built a century
           </h2>
           <p className="story__intro">A lineage of healers, scholars and visionaries, rooted in the ancient science of Ayurveda.</p>
         </Reveal>

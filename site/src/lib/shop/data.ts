@@ -63,6 +63,36 @@ function paragraphs(html: string | null): string[] {
     .filter(Boolean);
 }
 
+/**
+ * The client's approved copy deck (2026-11-26) rewrites a few paragraphs of the Shopify descriptions.
+ * Each rule replaces one paragraph, found by its opening words, and applies only while Shopify still
+ * has the old wording: once the description is updated in Shopify, the rule simply stops matching.
+ */
+const APPROVED: Record<string, { from: RegExp; to: string }[]> = {
+  "gloveda-face-wash": [
+    {
+      from: /^Designed for care, not correction/,
+      to: "A gentle yet thorough cleanse that removes impurities while respecting your skin's natural moisture barrier, keeping it fresh, balanced and comfortable for everyday use.",
+    },
+  ],
+  "gloveda-shampoo": [
+    {
+      from: /^Formulated for care, not correction/,
+      to: "Healthy hair starts with gentle care. This shampoo supports long-term hair health while maintaining softness, strength and natural shine from root to tip.",
+    },
+  ],
+  "gloveda-conditioner": [
+    {
+      from: /^Gloveda Conditioner is the final step in your hair care ritual/,
+      to: "Gloveda Conditioner is the final step in your hair care ritual—crafted to protect, nourish, and seal moisture without weighing your hair down. Made for smooth, silky hair, not heavy, coated finishes, it tames frizz and softens every strand with each wash. Thoughtfully formulated to smoothen frizz, soften strands, and leave your hair with a naturally silky finish.",
+    },
+  ],
+};
+const approved = (handle: string, paras: string[]) => {
+  const rules = APPROVED[handle];
+  return rules ? paras.map((t) => rules.find((r) => r.from.test(t))?.to ?? t) : paras;
+};
+
 const toProduct = (p: RawProduct): ShopProduct => {
   const variants = p.variants.map((v) => ({
     id: v.id,
@@ -75,7 +105,7 @@ const toProduct = (p: RawProduct): ShopProduct => {
     id: p.id,
     handle: p.handle,
     title: p.title,
-    description: paragraphs(p.body_html),
+    description: approved(p.handle, paragraphs(p.body_html)),
     tags: p.tags.map(decode),
     images: p.images.map((i) => ({ src: i.src, width: i.width, height: i.height })),
     variants,

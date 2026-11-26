@@ -49,8 +49,8 @@ const chapters: Chapter[] = [
     from: 0,
     to: 44,
     h1: true,
-    title: "A century of care, perfected for you.",
-    body: "Gloveda Ayurvedic skincare and hair care, 105 years in the making.",
+    title: "Gloveda: Ayurvedic Skincare & Hair Care",
+    body: "Rituals for skin and hair, 105 years in the making.",
     cta: { label: "Shop the collection", href: shopUrl("/collections/all") },
   },
   {

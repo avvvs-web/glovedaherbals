@@ -16,8 +16,8 @@ Status of the developer backlog (25 November 2026). "Done" means built in this r
 | Sticky mobile CTA + Buy Now | **Done.** The sticky bar already existed; "Buy now" sits under Add to bag and goes straight to checkout with that product. |
 | User profile (orders, addresses, tracking) | Account page exists. Sign-in needs `SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID` (see `docs/shopify-setup.md`). |
 | Terms of Use link | This site's footer already links to `/shop/policies/terms-of-service`. The "Press" mix-up is on the old live theme; fix it there or retire that theme. |
-| Hero heading + subline | **Done.** H1 "A century of care, perfected for you."; subline "Gloveda Ayurvedic skincare and hair care, 105 years in the making." (keeps the search keywords out of the H1 but on the page). |
-| "105 years" replaces "100" | **Done.** "A century" in Our Story and Gloveda Experience now reads "105 years". The hero keeps "A century" because that is the approved heading. |
+| Hero heading + subline | Superseded by the approved copy deck (2026-11-26): the hero stays "Gloveda: Ayurvedic Skincare & Hair Care" / "Rituals for skin and hair, 105 years in the making." |
+| "105 years" replaces "100" | Done where the copy says a number ("105 years of heritage", meta description). The approved copy deck keeps "The Vaidyars who built a century" and "A century of Ayurvedic wisdom". |
 | Category images → AI model photos | **Waiting on images.** Needs approved model photos; packaging in them must match the real products. |
 | Cookie consent banner + privacy policy | **Done.** Banner on every page; tags load only after "Accept"; "Cookie settings" in the footer reopens it. The privacy policy's Cookies section names the tags. Legal review still needed. |
 | Mobile page speed | Not started: needs a Lighthouse / PageSpeed run on the deployed site first. |
