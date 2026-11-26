@@ -68,7 +68,7 @@ function paragraphs(html: string | null): string[] {
  * Each rule replaces one paragraph, found by its opening words, and applies only while Shopify still
  * has the old wording: once the description is updated in Shopify, the rule simply stops matching.
  */
-const APPROVED: Record<string, { from: RegExp; to: string }[]> = {
+const APPROVED: Record<string, { from: RegExp; to: string | string[] }[]> = {
   "gloveda-face-wash": [
     {
       from: /^Designed for care, not correction/,
@@ -84,13 +84,28 @@ const APPROVED: Record<string, { from: RegExp; to: string }[]> = {
   "gloveda-conditioner": [
     {
       from: /^Gloveda Conditioner is the final step in your hair care ritual/,
-      to: "Gloveda Conditioner is the final step in your hair care ritual—crafted to protect, nourish, and seal moisture without weighing your hair down. Made for smooth, silky hair, not heavy, coated finishes, it tames frizz and softens every strand with each wash. Thoughtfully formulated to smoothen frizz, soften strands, and leave your hair with a naturally silky finish.",
+      // Shopify has only this paragraph; the approved copy adds what it helps with, how to use it and a closing line.
+      to: [
+        "Gloveda Conditioner is the final step in your hair care ritual—crafted to protect, nourish, and seal moisture without weighing your hair down. Made for smooth, silky hair, not heavy, coated finishes, it tames frizz and softens every strand with each wash. Thoughtfully formulated to smoothen frizz, soften strands, and leave your hair with a naturally silky finish.",
+        "Why you'll love it:",
+        "Reduced frizz",
+        "Softening strands",
+        "A silky, smooth finish",
+        "Healthier looking hair",
+        "How to use:",
+        "After shampooing, gently squeeze out excess water.",
+        "Apply to the mid-lengths and ends of your hair.",
+        "Leave on for 2 to 3 minutes.",
+        "Rinse thoroughly.",
+        "Use 2–3 times a week for best results.",
+        "Intentional care, refined over generations — made for lifelong hair wellness.",
+      ],
     },
   ],
 };
 const approved = (handle: string, paras: string[]) => {
   const rules = APPROVED[handle];
-  return rules ? paras.map((t) => rules.find((r) => r.from.test(t))?.to ?? t) : paras;
+  return rules ? paras.flatMap((t) => rules.find((r) => r.from.test(t))?.to ?? t) : paras;
 };
 
 const toProduct = (p: RawProduct): ShopProduct => {
