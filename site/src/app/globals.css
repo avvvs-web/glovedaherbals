@@ -1163,7 +1163,10 @@ html[data-header="hidden"]:not([data-nav="open"]) .shop-pill {
   .sfilm .sfilm__stage {
     position: sticky;
     top: 0;
+    /* The visible height, which grows when mobile browsers tuck their bars away while scrolling. A
+       fixed 100svh (the height with the bars shown) left a strip of page showing under the film then. */
     height: 100svh;
+    height: 100dvh;
     padding-block: 0;
     display: grid;
     align-items: center;
