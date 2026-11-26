@@ -46,7 +46,7 @@ export async function SiteHeader({ actions }: { actions?: ReactNode }) {
       },
       {
         title: "Gloveda",
-        links: [story, { name: "Gloveda Experience", href: EXPERIENCE_URL }, help, { name: "Track your order", href: shopUrl("/track") }, { name: "Wishlist", href: wishlist }, { name: "Sign in", href: shopUrl("/account") }],
+        links: [story, { name: "Journal", href: shopUrl("/blogs") }, { name: "Gloveda Experience", href: EXPERIENCE_URL }, help, { name: "Track your order", href: shopUrl("/track") }, { name: "Wishlist", href: wishlist }, { name: "Sign in", href: shopUrl("/account") }],
       },
     ],
   };

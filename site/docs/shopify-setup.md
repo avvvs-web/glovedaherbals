@@ -58,6 +58,27 @@ The store's reviews app is Loox. Product pages show the average score and count,
 - The live store also has an empty Judge.me widget left over. It can be removed in the theme.
 - Once step 2 is done, expose the product metafields `loox.avg_rating` and `loox.num_reviews` to the Storefront API so the scores come from Shopify rather than from Loox's page.
 
+## 0. Moving glovedaherbals.com from Shopify to this site (do this first)
+
+Until now `glovedaherbals.com` *was* the Shopify store. This site reads the catalogue from it (`/products.json`) and sends shoppers to its cart and checkout. So Shopify needs an address of its own **before** `glovedaherbals.com` is pointed at Vercel, or the shop shows no products and checkout breaks.
+
+In this order:
+
+1. **Give Shopify its own subdomain.** Shopify admin › Settings › Domains › Connect existing domain: add a subdomain such as `store.glovedaherbals.com`. In the DNS, point it at Shopify: a CNAME to `shops.myshopify.com`. Wait until Shopify shows it as connected (SSL issued).
+2. **Make that subdomain Shopify's primary domain.** Checkout, order emails and the order status page then use it. Shopify redirects its other addresses (including `….myshopify.com`) to the primary domain, so the primary must not be `glovedaherbals.com` any more.
+3. **Set the store address in Vercel** (Project › Settings › Environment Variables, Production), then redeploy:
+   - `SHOPIFY_PUBLIC_STORE_URL=https://store.glovedaherbals.com` (the subdomain from step 1)
+   - `NEXT_PUBLIC_SITE_URL=https://glovedaherbals.com`
+4. **Check on the Vercel address** before touching the apex DNS: products and prices show, Buy now opens checkout on `store.glovedaherbals.com`.
+5. **Point `glovedaherbals.com` (and `www`) at Vercel**: add both to the Vercel project's domains, then change the DNS records Vercel asks for. Remove `glovedaherbals.com` from Shopify's domains.
+6. **Check after the switch:**
+   - Old store links redirect: `/products/…`, `/collections/…`, `/pages/faqs`, `/policies/…`, `/search` go to the same thing under `/shop` (permanent redirects in `next.config.ts`).
+   - `/blogs/…` go to this site's Journal (`/shop/blogs/…`), which reads the articles from Shopify's blog feeds. `/pages/news-and-presence` goes to Shopify. Old `/cart` links go to Shopify's cart.
+   - Reviews appear on product pages (Loox allows `glovedaherbals.com` and its subdomains).
+   - Google Search Console: add the new sitemap once one exists, and watch for crawl errors.
+
+Email (`mail@glovedaherbals.com`) uses the domain's MX records. Leave those untouched when changing the web records.
+
 ## 5. The shop's address
 
 1. Add the DNS record for `shop.glovedaherbals.com`, pointing at the site's host.

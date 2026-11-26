@@ -75,6 +75,11 @@ export function SiteFooter() {
               </Link>
             </li>
             <li>
+              <a className="site-footer__link" href={shopUrl("/blogs")}>
+                Journal
+              </a>
+            </li>
+            <li>
               <a className="site-footer__link" href={EXPERIENCE_URL}>
                 Gloveda Experience
               </a>
