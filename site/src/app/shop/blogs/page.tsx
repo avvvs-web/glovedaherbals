@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { ArticleList, JournalDown } from "@/components/blog/ArticleList";
 import { BLOGS, getArticles } from "@/lib/blog";
+import { breadcrumbs, itemList, JsonLd } from "@/lib/seo";
 import { shopUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Journal",
   description: "Notes on Ayurvedic skin and hair care from Gloveda Herbals: herbs, rituals and how to use our products.",
   alternates: { canonical: shopUrl("/blogs") },
+  openGraph: { title: "Journal | Gloveda Herbals", description: "Notes on Ayurvedic skin and hair care from Gloveda Herbals: herbs, rituals and how to use our products.", url: shopUrl("/blogs") },
 };
 
 /** The Journal: every article from the store's blogs, newest first. */
@@ -32,6 +34,8 @@ export default async function JournalPage() {
             </nav>
           ) : null}
         </header>
+        <JsonLd data={breadcrumbs([["Shop", shopUrl("/")], ["Journal", shopUrl("/blogs")]])} />
+        {articles?.length ? <JsonLd data={itemList("Journal", articles.map((a) => ({ name: a.title, url: shopUrl(`/blogs/${a.blog}/${a.handle}`) })))} /> : null}
         {articles === null ? <JournalDown /> : articles.length ? <ArticleList articles={articles} /> : <p className="gl-body">New articles will appear here soon.</p>}
       </div>
     </section>

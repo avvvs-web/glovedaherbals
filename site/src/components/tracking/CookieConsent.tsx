@@ -28,7 +28,10 @@ function save(c: Consent) {
  * "Cookie settings" link, which dispatches `gl:cookie-settings`.
  */
 export function CookieConsent() {
-  const consent = useSyncExternalStore(subscribe, readConsent, () => "granted" as Consent);
+  // The server cannot know the visitor's choice, so the first render (and hydration) assume "pending": no
+  // banner and, above all, no tags. Assuming "granted" here loaded Tag Manager during hydration even for
+  // visitors who had chosen "Necessary only", because next/script starts loading in that first render's effect.
+  const consent = useSyncExternalStore<Consent | null | "pending">(subscribe, readConsent, () => "pending");
   const [reopened, setReopened] = useState(false);
   useEffect(() => {
     const show = () => setReopened(true);
@@ -41,7 +44,7 @@ export function CookieConsent() {
     // Tags already on the page cannot be unloaded; a reload applies a withdrawal straight away.
     if (c === "denied" && consent === "granted") window.location.reload();
   };
-  const open = consent === null || reopened;
+  const open = consent !== "pending" && (consent === null || reopened);
 
   return (
     <>

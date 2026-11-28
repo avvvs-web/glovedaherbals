@@ -4,6 +4,7 @@ import { JournalDown } from "@/components/blog/ArticleList";
 import { ProductRow } from "@/components/shop/ui/ProductRow";
 import { formatDate, getArticle, getArticles, mentionedProducts } from "@/lib/blog";
 import { getProducts } from "@/lib/shop/data";
+import { abs, breadcrumbs, JsonLd, ORG_ID } from "@/lib/seo";
 import { BRAND, shopUrl } from "@/lib/site";
 
 export async function generateMetadata({ params }: PageProps<"/shop/blogs/[blog]/[article]">): Promise<Metadata> {
@@ -41,9 +42,15 @@ export default async function ArticlePage({ params }: PageProps<"/shop/blogs/[bl
     headline: a.title,
     datePublished: a.published,
     dateModified: a.updated,
-    author: { "@type": "Organization", name: BRAND },
-    publisher: { "@type": "Organization", name: BRAND },
-    mainEntityOfPage: shopUrl(`/blogs/${a.blog}/${a.handle}`),
+    description: a.excerpt,
+    inLanguage: "en-IN",
+    wordCount: a.text.split(" ").length,
+    articleSection: a.blogTitle,
+    author: { "@type": "Organization", name: BRAND, "@id": ORG_ID },
+    publisher: { "@id": ORG_ID },
+    image: abs("/media/og-1200x630.jpg"),
+    mainEntityOfPage: abs(shopUrl(`/blogs/${a.blog}/${a.handle}`)),
+    ...(named.length ? { mentions: named.map((p) => ({ "@type": "Product", name: p.title, url: abs(shopUrl(`/products/${p.handle}`)) })) } : {}),
   };
 
   return (
@@ -98,7 +105,8 @@ export default async function ArticlePage({ params }: PageProps<"/shop/blogs/[bl
           </section>
         ) : null}
       </div>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
+      <JsonLd data={jsonLd} />
+      <JsonLd data={breadcrumbs([["Shop", shopUrl("/")], ["Journal", shopUrl("/blogs")], [a.blogTitle, shopUrl(`/blogs/${a.blog}`)], [a.title, shopUrl(`/blogs/${a.blog}/${a.handle}`)]])} />
     </article>
   );
 }

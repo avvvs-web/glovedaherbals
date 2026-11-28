@@ -337,3 +337,17 @@
   border-left: 1px solid var(--color-ornament);
   color: var(--color-text-muted);
 }
+
+/* ---------- Page not found ---------- */
+/* The site-wide page has no shop layout above it, so it clears the floating header itself. */
+main.not-found {
+  padding-top: calc(72px + var(--section-y));
+}
+.not-found__lead {
+  margin-block: var(--space-4) var(--space-6);
+}
+.not-found__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}

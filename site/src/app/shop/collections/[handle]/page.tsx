@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { ProductGrid, StoreDown } from "@/components/shop/ProductCard";
 import { Icon } from "@/components/shop/ui/Icon";
 import { formatMoney, getCollectionProducts, getCollections, type ShopProduct } from "@/lib/shop/data";
+import { breadcrumbs, itemList, JsonLd } from "@/lib/seo";
 import { collections, shopUrl } from "@/lib/site";
 
 const SORTS = { featured: "Featured", "price-asc": "Price, low to high", "price-desc": "Price, high to low" } as const;
@@ -20,7 +21,15 @@ async function infoFor(handle: string) {
 export async function generateMetadata({ params }: PageProps<"/shop/collections/[handle]">): Promise<Metadata> {
   const { handle } = await params;
   const info = await infoFor(handle);
-  return { title: handle === "all" ? "All products" : (info?.title ?? "Collection"), alternates: { canonical: shopUrl(`/collections/${handle}`) } };
+  const name = handle === "all" ? "All products" : (info?.title ?? "Collection");
+  const what = handle === "all" ? "face, hair and body care, and sets for gifting" : name.toLowerCase();
+  const description = `Shop Gloveda Herbals ${what}: Ayurvedic care formulated by doctors and made in small batches. Prices, stock and delivery across India.`;
+  return {
+    title: name,
+    description,
+    alternates: { canonical: shopUrl(`/collections/${handle}`) },
+    openGraph: { title: `${name} | Gloveda Herbals`, description, url: shopUrl(`/collections/${handle}`), ...(info?.image ? { images: [{ url: info.image, alt: name }] } : {}) },
+  };
 }
 
 const sorted = (products: ShopProduct[], sort: Sort) => {
@@ -92,6 +101,8 @@ export default async function CollectionPage({ params, searchParams }: PageProps
     return shopUrl(`/collections/${handle}${qs ? `?${qs}` : ""}`);
   };
   const title = max !== null ? `Under ${formatMoney(max)}` : (info?.title ?? "Collection");
+  // For structured data: the products this page lists (the whole range page lists the "all" collection).
+  const listed = whole ? await getCollectionProducts("all") : shown;
 
   return (
     <section className="gl-section shop-page" aria-labelledby="collection-title">
@@ -140,6 +151,8 @@ export default async function CollectionPage({ params, searchParams }: PageProps
           <StoreDown />
         )}
       </div>
+      <JsonLd data={breadcrumbs([["Shop", shopUrl("/")], [title, shopUrl(`/collections/${handle}`)]])} />
+      {listed?.length ? <JsonLd data={itemList(title, listed.map((p) => ({ name: p.title, url: shopUrl(`/products/${p.handle}`) })))} /> : null}
     </section>
   );
 }

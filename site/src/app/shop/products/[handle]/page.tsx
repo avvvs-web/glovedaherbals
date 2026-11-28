@@ -18,6 +18,7 @@ import { concerns, matchConcern } from "@/lib/shop/concerns";
 import { CHECKOUT_BASE, formatMoney, getCollectionProducts, getProduct, getProducts, type ShopProduct } from "@/lib/shop/data";
 import { describe } from "@/lib/shop/describe";
 import { getRating, LOOX_ID, LOOX_SHOP, REVIEWS_HOST } from "@/lib/shop/reviews";
+import { abs, breadcrumbs, JsonLd, ORG_ID } from "@/lib/seo";
 import { collections, shopUrl } from "@/lib/site";
 
 /** The approved brand statements, and nothing else: no delivery, returns or results promises are made here. */
@@ -60,13 +61,18 @@ const slug = (name: string) =>
 export async function generateMetadata({ params }: PageProps<"/shop/products/[handle]">): Promise<Metadata> {
   const { handle } = await params;
   const product = await getProduct(handle);
-  if (!product) return { title: "Product" };
+  if (!product) return { title: "Page not found", robots: { index: false } };
   const d = describe(product.description);
   return {
     title: product.title,
     description: (d.about || product.description[0] || "").slice(0, 155) || undefined,
     alternates: { canonical: shopUrl(`/products/${handle}`) },
-    openGraph: { title: product.title, images: product.images[0] ? [{ url: product.images[0].src }] : undefined },
+    openGraph: {
+      title: product.title,
+      description: (d.about || product.description[0] || "").slice(0, 200) || undefined,
+      url: shopUrl(`/products/${handle}`),
+      images: product.images[0] ? [{ url: product.images[0].src, alt: product.title }] : undefined,
+    },
   };
 }
 
@@ -100,7 +106,11 @@ export default async function ProductPage({ params }: PageProps<"/shop/products/
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
+    "@id": `${abs(shopUrl(`/products/${handle}`))}#product`,
     name: product.title,
+    sku: String(variant.id),
+    url: abs(shopUrl(`/products/${handle}`)),
+    ...(place.range ? { category: place.range.name } : {}),
     image: product.images.map((i) => i.src),
     description: d.about || product.description[0],
     brand: { "@type": "Brand", name: "Gloveda Herbals" },
@@ -108,7 +118,9 @@ export default async function ProductPage({ params }: PageProps<"/shop/products/
     ...(rating ? { aggregateRating: { "@type": "AggregateRating", ratingValue: rating.average.toFixed(1), reviewCount: rating.count } } : {}),
     offers: {
       "@type": "Offer",
-      url: shopUrl(`/products/${handle}`),
+      url: abs(shopUrl(`/products/${handle}`)),
+      itemCondition: "https://schema.org/NewCondition",
+      seller: { "@id": ORG_ID },
       priceCurrency: process.env.SHOPIFY_CURRENCY ?? "INR",
       price: variant.price.toFixed(2),
       availability: product.available ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
@@ -326,7 +338,8 @@ export default async function ProductPage({ params }: PageProps<"/shop/products/
       <RecentlyViewed current={product.handle} catalog={catalog} />
       <ViewItem variantId={variant.id} title={product.title} price={variant.price} currency={currency} category={place.range?.name} />
       <BuyBar watch="pdp-buy" variantId={variant.id} available={product.available} title={product.title} price={price} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
+      <JsonLd data={jsonLd} />
+      <JsonLd data={breadcrumbs([["Shop", shopUrl("/")], ...(place.range ? [[place.range.name, place.range.href] as [string, string]] : []), [product.title, shopUrl(`/products/${handle}`)]])} />
     </article>
   );
 }

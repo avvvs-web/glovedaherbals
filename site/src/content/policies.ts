@@ -137,7 +137,7 @@ export const policies: Policy[] = [
       {
         heading: "Cookies",
         body: [
-          "This site keeps your cart in your browser's storage. The checkout, run by Shopify, uses cookies that are necessary to take your order. You can clear or block these in your browser settings, though the cart and checkout may then not work.",
+          "This site keeps your cart, your wishlist, the products you viewed recently, your recent searches and your cookie choice in your browser's own storage, on your device. They are not sent to us. The checkout, run by Shopify, uses cookies that are necessary to take your order. You can clear or block these in your browser settings, though the cart and checkout may then not work.",
           "With your permission, given in the cookie banner, we also use analytics and advertising cookies: Google Tag Manager and Google Analytics, to understand how the site is used; Microsoft Clarity, to see how pages are used; and the Meta Pixel, to measure our advertising. None of these load unless you choose Accept. You can change your choice at any time from the Cookie settings link at the foot of every page.",
         ],
       },

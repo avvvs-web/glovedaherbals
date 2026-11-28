@@ -5,6 +5,7 @@ import { Icon } from "@/components/shop/ui/Icon";
 import { ProductRow } from "@/components/shop/ui/ProductRow";
 import { concernBySlug, concerns, matchConcern } from "@/lib/shop/concerns";
 import { getCollectionProducts, getProducts } from "@/lib/shop/data";
+import { breadcrumbs, itemList, JsonLd } from "@/lib/seo";
 import { shopUrl } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -14,7 +15,15 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps<"/shop/concerns/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const concern = concernBySlug(slug);
-  return { title: concern ? `${concern.name}: shop by concern` : "Shop by concern", alternates: { canonical: shopUrl(`/concerns/${slug}`) } };
+  const description = concern
+    ? `Gloveda Herbals products whose own descriptions speak to ${concern.name.toLowerCase()}, with the line from each that does. Ayurvedic ${concern.area === "Hair" ? "hair" : "skin and body"} care, formulated by doctors.`
+    : undefined;
+  return {
+    title: concern ? `${concern.name}: shop by concern` : "Shop by concern",
+    description,
+    alternates: { canonical: shopUrl(`/concerns/${slug}`) },
+    ...(concern && description ? { openGraph: { title: `${concern.name}: shop by concern | Gloveda Herbals`, description, url: shopUrl(`/concerns/${slug}`) } } : {}),
+  };
 }
 
 export default async function ConcernPage({ params }: PageProps<"/shop/concerns/[slug]">) {
@@ -68,6 +77,8 @@ export default async function ConcernPage({ params }: PageProps<"/shop/concerns/
               </ul>
             </div>
           ) : null}
+          <JsonLd data={breadcrumbs([["Shop", shopUrl("/")], ["Shop by concern", shopUrl("/concerns")], [concern.name, shopUrl(`/concerns/${concern.slug}`)]])} />
+          {matches.length ? <JsonLd data={itemList(concern.name, matches.map((m) => ({ name: m.product.title, url: shopUrl(`/products/${m.product.handle}`) })))} /> : null}
           {!matches.length ? <p className="gl-body">No product description mentions this right now.</p> : null}
           <a className="gx-more" href={shopUrl("/collections/all")}>
             See the whole range <Icon name="arrow" size={18} />

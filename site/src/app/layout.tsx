@@ -6,6 +6,7 @@ import "./globals.css";
 import "../styles/extras.css";
 import { CookieConsent } from "@/components/tracking/CookieConsent";
 import { BRAND, SITE_NAME, SITE_URL } from "@/lib/site";
+import { SiteJsonLd } from "@/lib/seo";
 
 const marcellus = localFont({
   src: "../fonts/marcellus.woff2",
@@ -21,6 +22,16 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: { default: `${SITE_NAME} | Ayurvedic Skincare & Hair Care Products`, template: `%s | ${BRAND}` },
   applicationName: BRAND,
+  description: "Gloveda Herbals: doctor-formulated Ayurvedic face, hair and body care, made in small batches, from Arya Vaidya Vilasini Vaidya Sala, established in 1921.",
+  // Defaults for pages that do not set their own sharing details.
+  openGraph: {
+    type: "website",
+    siteName: BRAND,
+    locale: "en_IN",
+    images: [{ url: "/media/og-1200x630.jpg", width: 1200, height: 630, alt: "Gloveda Herbals products in a row at dusk." }],
+  },
+  twitter: { card: "summary_large_image" },
+  formatDetection: { telephone: false, email: false, address: false },
 };
 
 export const viewport: Viewport = {
@@ -38,6 +49,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </Script>
         {children}
         <EaseIn />
+        <SiteJsonLd />
         <CookieConsent />
       </body>
     </html>

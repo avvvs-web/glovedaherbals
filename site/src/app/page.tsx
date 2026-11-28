@@ -8,7 +8,6 @@ import { RangeDoors } from "@/components/shop/RangeDoors";
 import { ExperiencePartners } from "@/components/sections/ExperiencePartners";
 import { OurStory } from "@/components/sections/OurStory";
 import { WhatsAppButton } from "@/components/shop/WhatsAppButton";
-import { SiteJsonLd } from "@/lib/seo";
 import { shopUrl } from "@/lib/site";
 
 const title = "Gloveda | Ayurvedic Skincare & Hair Care Products";
@@ -147,7 +146,6 @@ export default function Home() {
       </main>
       <SiteFooter />
       <WhatsAppButton />
-      <SiteJsonLd />
     </>
   );
 }

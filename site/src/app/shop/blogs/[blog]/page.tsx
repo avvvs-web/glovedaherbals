@@ -9,7 +9,8 @@ export const generateStaticParams = () => BLOGS.map((b) => ({ blog: b.handle }))
 export async function generateMetadata({ params }: PageProps<"/shop/blogs/[blog]">): Promise<Metadata> {
   const { blog } = await params;
   const b = blogByHandle(blog);
-  return { title: b ? `${b.title}: Journal` : "Journal", alternates: { canonical: shopUrl(`/blogs/${blog}`) } };
+  const description = b ? `${b.title} articles from the Gloveda Herbals Journal: notes on Ayurvedic skin and hair care.` : undefined;
+  return { title: b ? `${b.title}: Journal` : "Journal", description, alternates: { canonical: shopUrl(`/blogs/${blog}`) }, ...(b?.handle && description ? { openGraph: { title: `${b.title}: Journal | Gloveda Herbals`, description, url: shopUrl(`/blogs/${blog}`) } } : {}) };
 }
 
 /** One of the store's blogs (its old address, /blogs/beauty, keeps working). */

@@ -116,7 +116,15 @@ export function SiteFooter() {
           ))}
         </ul>
         <p className="gl-small">
-          © {year} Gloveda Herbals. {COMPANY.name}, {COMPANY.registeredOffice}. <CookieSettingsLink className="site-footer__cookies" />
+          © {year} Gloveda Herbals. {COMPANY.name}, {COMPANY.registeredOffice}. Customer care:{" "}
+          <a className="site-footer__cookies" href={`mailto:${COMPANY.email}`}>
+            {COMPANY.email}
+          </a>
+          ,{" "}
+          <a className="site-footer__cookies" href={`tel:${COMPANY.phone.replace(/\s/g, "")}`}>
+            {COMPANY.phone}
+          </a>
+          . <CookieSettingsLink className="site-footer__cookies" />
         </p>
         <a className="site-footer__link" href="#top">
           Back to top
