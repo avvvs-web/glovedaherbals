@@ -6,20 +6,32 @@
 export const SITE_NAME = "Gloveda";
 export const BRAND = "Gloveda Herbals";
 
-/** Canonical origin of this site. */
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://glovedaherbals.com").replace(/\/$/, "");
+/** The parent site, gloveda.co: the film and the brand story (client, 2026-11-28). Its own project. */
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://gloveda.co").replace(/\/$/, "");
 
 /**
- * Where the shop lives. The client's decision (2026-11-22) is shop.glovedaherbals.com, which keeps the
- * store's existing paths: set NEXT_PUBLIC_SHOP_ORIGIN to it once that address exists. Until then the
- * shop is reached at /shop on whatever address the site itself is served from, so its links always work.
+ * Where the shop lives: its own address, herbals.gloveda.co (client, 2026-11-28), which keeps the
+ * store's paths (/collections/…, /products/…). For local work set NEXT_PUBLIC_SHOP_ORIGIN to
+ * http://localhost:3000/shop, or to "/shop" to serve the shop under the site's own address.
  */
-export const SHOP_ORIGIN = (process.env.NEXT_PUBLIC_SHOP_ORIGIN ?? "/shop").replace(/\/$/, "");
+export const SHOP_ORIGIN = (process.env.NEXT_PUBLIC_SHOP_ORIGIN ?? "https://herbals.gloveda.co").replace(/\/$/, "");
 
-/** Gloveda Experience, the brand's clinic and hospitality offering. */
-export const EXPERIENCE_URL = "https://glovedaexperience.com";
+/** True when the shop has an address of its own (not a /shop folder of the main site). */
+export const SHOP_SEPARATE = /^https?:\/\/[^/]+$/.test(SHOP_ORIGIN);
+
+/** Gloveda Experience, the brand's hospitality offering. */
+export const EXPERIENCE_URL = "https://experience.gloveda.co";
+
+/** Gloveda Revive, the brand's skin and hair clinics. */
+export const REVIVE_URL = "https://revive.gloveda.co";
 
 export const shopUrl = (path: `/${string}`) => `${SHOP_ORIGIN}${path}`;
+
+/** A page of the parent site (gloveda.co). */
+export const siteUrl = (path: `/${string}`) => `${SITE_URL}${path}`;
+
+/** The shop's own origin, for absolute addresses (canonical links, structured data, sharing images). */
+export const SHOP_BASE = SHOP_SEPARATE ? SHOP_ORIGIN : new URL(SHOP_ORIGIN, SITE_URL).origin;
 
 export const collections = [
   { name: "Face Care", path: "/collections/skin-care" },

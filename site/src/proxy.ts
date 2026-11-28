@@ -1,11 +1,15 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { SHOP_SEPARATE } from "@/lib/site";
 
 /**
- * One codebase, two domains: requests to the shop host (shop.glovedaherbals.com) are served from the
- * /shop routes, so shop URLs keep the store's own paths (/collections/…, /products/…).
+ * This codebase is the shop, Gloveda Herbals, at herbals.gloveda.co (client, 2026-11-28); the parent site
+ * gloveda.co is its own project. The pages live under /shop, and on its own address every request is
+ * served from there, so shop URLs keep the store's own paths (/collections/…, /products/…). The same holds
+ * on any other address the project answers on (a Vercel preview). For local work the shop can instead be
+ * opened at /shop (NEXT_PUBLIC_SHOP_ORIGIN=http://localhost:3000/shop), and then nothing is rewritten.
  */
-const SHOP_HOSTS = (process.env.SHOP_HOSTS ?? "shop.glovedaherbals.com").split(",").map((h) => h.trim().toLowerCase());
+const OWN_FILES = ["/robots.txt", "/sitemap.xml"];
 
 /**
  * Where the shop sells today. Visitors from any other country can read the whole site, but every price
@@ -29,17 +33,27 @@ function withMarket(request: NextRequest, response: NextResponse) {
   return response;
 }
 
+const inShop = (path: string) => path === "/shop" || path.startsWith("/shop/");
+
 export function proxy(request: NextRequest) {
-  const host = (request.headers.get("host") ?? "").split(":")[0].toLowerCase();
-  if (!SHOP_HOSTS.includes(host)) return withMarket(request, NextResponse.next());
+  const { pathname } = request.nextUrl;
+  if (!SHOP_SEPARATE) return OWN_FILES.includes(pathname) ? NextResponse.next() : withMarket(request, NextResponse.next());
   const url = request.nextUrl.clone();
-  if (url.pathname.startsWith("/shop")) return withMarket(request, NextResponse.next());
-  url.pathname = `/shop${url.pathname === "/" ? "" : url.pathname}`;
+  // herbals.gloveda.co/shop/x is the same page as herbals.gloveda.co/x: keep one address for it.
+  if (inShop(pathname)) {
+    url.pathname = pathname.slice(5) || "/";
+    return NextResponse.redirect(url, 308);
+  }
+  if (OWN_FILES.includes(pathname)) {
+    url.pathname = `/shop${pathname}`;
+    return NextResponse.rewrite(url);
+  }
+  url.pathname = `/shop${pathname === "/" ? "" : pathname}`;
   return withMarket(request, NextResponse.rewrite(url));
 }
 
 export const config = {
   // Pages only: static files, images and Next internals are shared by both hosts.
   // (The dot is escaped twice: once for this string, once for the pattern. Unescaped, it matched any path.)
-  matcher: ["/((?!_next/|brand/|media/|seq/|favicon|icon|apple-icon|.*\\.[a-z0-9]+$).*)"],
+  matcher: ["/((?!_next/|brand/|media/|seq/|favicon|icon|apple-icon|.*\\.[a-z0-9]+$).*)", "/robots.txt", "/sitemap.xml"],
 };

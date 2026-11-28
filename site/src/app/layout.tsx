@@ -5,7 +5,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import "../styles/extras.css";
 import { CookieConsent } from "@/components/tracking/CookieConsent";
-import { BRAND, SITE_NAME, SITE_URL } from "@/lib/site";
+import { BRAND, SHOP_BASE, SITE_NAME } from "@/lib/site";
 import { SiteJsonLd } from "@/lib/seo";
 
 const marcellus = localFont({
@@ -19,7 +19,7 @@ const marcellus = localFont({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
+  metadataBase: new URL(SHOP_BASE),
   title: { default: `${SITE_NAME} | Ayurvedic Skincare & Hair Care Products`, template: `%s | ${BRAND}` },
   applicationName: BRAND,
   description: "Gloveda Herbals: doctor-formulated Ayurvedic face, hair and body care, made in small batches, from Arya Vaidya Vilasini Vaidya Sala, established in 1921.",

@@ -50,7 +50,7 @@ if (!domain || !token || !version) {
 }
 
 // 3. Customer accounts: Shopify publishes the sign-in endpoints on the storefront domain.
-const shopOrigin = (env.NEXT_PUBLIC_SHOP_ORIGIN && !/localhost/.test(env.NEXT_PUBLIC_SHOP_ORIGIN) ? env.NEXT_PUBLIC_SHOP_ORIGIN : "https://shop.glovedaherbals.com").replace(/\/$/, "");
+const shopOrigin = (env.NEXT_PUBLIC_SHOP_ORIGIN && !/localhost/.test(env.NEXT_PUBLIC_SHOP_ORIGIN) ? env.NEXT_PUBLIC_SHOP_ORIGIN : "https://herbals.gloveda.co").replace(/\/$/, "");
 if (!env.SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID) add("Customer accounts", "NOT SET", "missing SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID");
 else {
   try {

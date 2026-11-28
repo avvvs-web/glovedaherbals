@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
   },
   // Development only: lets the local server be opened under the shop's own hostname (mapped to this
   // machine), to test what depends on that name, such as the reviews frame.
-  allowedDevOrigins: ["shop.glovedaherbals.com"],
+  allowedDevOrigins: ["herbals.gloveda.co"],
   images: {
     // Product photography comes from the brand's own Shopify CDN.
     // Object form (no `search` key) so Shopify's ?v= cache-busting query is allowed.

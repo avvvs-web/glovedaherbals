@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { Reveal } from "@/components/motion/Reveal";
 import { BestSellerHero } from "@/components/shop/BestSellerHero";
 import { ConcernLinks } from "@/components/shop/ConcernLinks";
@@ -9,7 +8,7 @@ import { StoreDown } from "@/components/shop/ProductCard";
 import { Icon } from "@/components/shop/ui/Icon";
 import { ProductRow } from "@/components/shop/ui/ProductRow";
 import { formatMoney, getCollectionProducts, getProducts } from "@/lib/shop/data";
-import { shopUrl } from "@/lib/site";
+import { shopUrl, siteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: { absolute: "Shop Gloveda Herbals | Ayurvedic Skincare & Hair Care" },
@@ -160,9 +159,9 @@ export default async function ShopHome() {
               It began in 1921.
             </h2>
             <p className="gx-lead">With the physicians of Arya Vaidya Vilasini Vaidya Sala, and a way of caring for skin that has been handed down ever since.</p>
-            <Link className="gx-more" href="/#our-story">
+            <a className="gx-more" href={siteUrl("/#our-story")}>
               Read our story <Icon name="arrow" size={18} />
-            </Link>
+            </a>
           </Reveal>
           <Reveal className="gx-col-7" delay={0.08}>
             <picture className="gx-storyteaser__media">

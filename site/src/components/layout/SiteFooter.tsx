@@ -1,8 +1,7 @@
 import Image from "next/image";
-import Link from "next/link";
 import { CookieSettingsLink } from "@/components/tracking/CookieConsent";
 import { COMPANY, policies } from "@/content/policies";
-import { collections, EXPERIENCE_URL, shopUrl, social } from "@/lib/site";
+import { collections, EXPERIENCE_URL, REVIVE_URL, shopUrl, siteUrl, social } from "@/lib/site";
 
 const columns = [
   {
@@ -48,7 +47,7 @@ export function SiteFooter() {
       <div className="site-footer__crown">
         <div className="gl-container site-footer__crownInner">
           <div className="site-footer__artBox" aria-hidden="true">
-            <Image className="site-footer__art" src="/seq/film/lg/0592.webp" alt="" width={1920} height={1080} sizes="(min-width: 64rem) 60rem, 100vw" loading="lazy" />
+            <Image className="site-footer__art" src="/media/keyline-1920.webp" alt="" width={1920} height={1080} sizes="(min-width: 64rem) 60rem, 100vw" loading="lazy" />
           </div>
           <div className="site-footer__words">
             <p className="site-footer__statement">Tradition you can trust.</p>
@@ -70,9 +69,9 @@ export function SiteFooter() {
           <p className="site-footer__line">Gloveda Herbals. Ayurvedic skincare and hair care from {COMPANY.name}, established in 1921.</p>
           <ul className="site-footer__also" role="list">
             <li>
-              <Link className="site-footer__link" href="/#our-story">
+              <a className="site-footer__link" href={siteUrl("/#our-story")}>
                 Our story
-              </Link>
+              </a>
             </li>
             <li>
               <a className="site-footer__link" href={shopUrl("/blogs")}>
@@ -82,6 +81,11 @@ export function SiteFooter() {
             <li>
               <a className="site-footer__link" href={EXPERIENCE_URL}>
                 Gloveda Experience
+              </a>
+            </li>
+            <li>
+              <a className="site-footer__link" href={REVIVE_URL}>
+                Gloveda Revive
               </a>
             </li>
           </ul>
@@ -98,6 +102,11 @@ export function SiteFooter() {
                     </a>
                   </li>
                 ))}
+                {col.title === "Help" ? (
+                  <li>
+                    <CookieSettingsLink className="site-footer__link" />
+                  </li>
+                ) : null}
               </ul>
             </nav>
           ))}
@@ -124,7 +133,7 @@ export function SiteFooter() {
           <a className="site-footer__cookies" href={`tel:${COMPANY.phone.replace(/\s/g, "")}`}>
             {COMPANY.phone}
           </a>
-          . <CookieSettingsLink className="site-footer__cookies" />
+          .
         </p>
         <a className="site-footer__link" href="#top">
           Back to top

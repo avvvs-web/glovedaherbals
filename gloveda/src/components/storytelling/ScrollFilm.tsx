@@ -153,6 +153,8 @@ export function ScrollFilm({ chapters }: Props) {
   const state = useRef({ base: 0, frame: 0, drawn: -2, moved: 0, focus: -1 });
   // The film box's size, kept by the ResizeObserver so drawing never reads layout (no forced reflow).
   const dims = useRef({ w: 0, h: 0 });
+  // The frames' own width: 1920 for the 1080p set, 1280 for the 720p one.
+  const native = useRef(1920);
 
   const draw = useCallback(() => {
     const c = canvas.current;
@@ -161,9 +163,13 @@ export function ScrollFilm({ chapters }: Props) {
     if (!c || !box || !s) return;
     const ctx = c.getContext("2d");
     if (!ctx) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     if (!dims.current.w) dims.current = { w: box.clientWidth, h: box.clientHeight };
     const cssW = dims.current.w;
+    // The canvas is never sharper than the frames themselves: past the frame's own width extra canvas
+    // pixels add no detail, only drawing work on every scroll tick (on a retina laptop, about twice the
+    // pixels). The CSS stretches the canvas over the box; the text is not on it, so it stays crisp.
+    const cover = coverRect(cssW, dims.current.h).w;
+    const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2, native.current / cover));
     const w = Math.round(cssW * dpr);
     const h = Math.round(dims.current.h * dpr);
     if (c.width !== w || c.height !== h) {
@@ -185,9 +191,10 @@ export function ScrollFilm({ chapters }: Props) {
     const mix = key - lo;
     const a = s.ready(lo);
     const b = mix > 0.02 ? s.ready(lo + 1) : null;
-    // Between frames that are not decoded yet (a fast flick, or still loading) the closest decoded frame
-    // is shown instead; drawing never waits on a decode.
-    const img: ImageBitmap | null = a && (b || mix <= 0.02) ? a : s.near(near);
+    // Both neighbours decoded: the second is laid over the first. Only one of them: hold it, rather than
+    // jumping to some other frame and back. Neither (a fast flick, or still loading): the closest decoded
+    // frame is shown. Drawing never waits on a decode.
+    const img: ImageBitmap | null = a ?? (b && mix >= 0.5 ? b : null) ?? s.near(near);
     if (!img) return;
     const blend = img === a && b ? b : null;
     ctx.imageSmoothingQuality = "high";
@@ -226,6 +233,7 @@ export function ScrollFilm({ chapters }: Props) {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const upright = !(box.clientWidth >= 768 && box.clientWidth / box.clientHeight >= 1.2);
     const size = coverRect(box.clientWidth * dpr, box.clientHeight * dpr).w > 1280 ? "lg" : "sm";
+    native.current = size === "lg" ? 1920 : 1280;
     let engaged = false;
     const engage = () => {
       engaged = true;
@@ -292,10 +300,11 @@ export function ScrollFilm({ chapters }: Props) {
             trigger: el,
             start: "top top",
             end: "bottom bottom",
-            scrub: 0.7,
+            scrub: 1, // the film eases after the scroll for a second: a flick or a notched wheel glides
             onUpdate: (self) => {
-              // The header steps back while the story plays and returns on the way up.
-              html.dataset.header = self.direction === 1 && self.progress > 0.004 && self.progress < 1 ? "hidden" : "shown";
+              // The header steps back while the story plays and returns on the way up (written only when it changes).
+              const next = self.direction === 1 && self.progress > 0.004 && self.progress < 1 ? "hidden" : "shown";
+              if (html.dataset.header !== next) html.dataset.header = next;
             },
             onLeave: () => (html.dataset.header = "shown"),
           },

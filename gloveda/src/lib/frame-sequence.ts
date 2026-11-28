@@ -131,7 +131,27 @@ export class FrameSequence {
     this.lo = Math.max(0, i - (dir === 1 ? this.win.behind : this.win.ahead));
     this.hi = Math.min(this.count - 1, i + (dir === 1 ? this.win.ahead : this.win.behind));
     this.release((k) => k < this.lo - this.win.slack || k > this.hi + this.win.slack);
+    this.prioritise(i, dir);
     this.pump();
+  }
+
+  /**
+   * Downloads follow the viewer: frames still waiting in the queue that lie just ahead of `i` (in the
+   * direction of travel, then a few behind) move to the front, so the full-size frames about to be shown
+   * arrive before the far end of the film does. Without this the coarse-to-fine order can leave the next
+   * few frames missing, and the film steps to a small stand-in frame and back.
+   */
+  private prioritise(i: number, dir: 1 | -1) {
+    if (!this.queue.length) return;
+    const reach = this.win.ahead * 3;
+    const want: number[] = [];
+    for (let d = 0; d <= reach; d++) want.push(i + d * dir);
+    for (let d = 1; d <= this.win.behind; d++) want.push(i - d * dir);
+    const queued = new Set(this.queue);
+    const front = want.filter((k) => k >= 0 && k < this.count && !this.blobs[k] && queued.has(k));
+    if (!front.length) return;
+    const moved = new Set(front);
+    this.queue = [...front, ...this.queue.filter((k) => !moved.has(k))];
   }
 
   /** Frame `i` at full size, decoded and ready to draw, if it is in the window. */

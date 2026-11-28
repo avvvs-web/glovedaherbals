@@ -1,0 +1,363 @@
+/* Commerce extras: cookie banner, WhatsApp button, Buy now / Notify me, cart steps, order tracking.
+   Every value is a Gloveda Design System token. */
+
+/* ---------- Cookie banner ---------- */
+.consent {
+  position: fixed;
+  z-index: var(--z-toast);
+  left: var(--space-3);
+  right: var(--space-3);
+  bottom: calc(var(--space-3) + env(safe-area-inset-bottom));
+  display: grid;
+  gap: var(--space-3);
+  max-width: 34rem;
+  padding: var(--space-5);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+}
+.consent__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 400;
+  color: var(--color-heading);
+}
+.consent__text {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: var(--leading-body);
+}
+.consent__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+@media (width >= 48rem) {
+  .consent {
+    left: var(--space-5);
+    right: auto;
+    bottom: var(--space-5);
+  }
+}
+
+/* The footer's "Cookie settings" sits in the legal line as a text button. */
+/* Cookie settings sits in the footer's Help column: a button dressed as the links beside it. */
+button.site-footer__link {
+  padding-inline: 0;
+  font: inherit;
+  font-size: var(--text-base);
+  text-align: start;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+}
+.site-footer__cookies {
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  text-decoration-color: var(--color-ornament);
+  text-underline-offset: 0.25em;
+  cursor: pointer;
+}
+
+/* ---------- Floating WhatsApp button ---------- */
+.wa-float {
+  position: fixed;
+  z-index: var(--z-sticky);
+  right: var(--space-4);
+  bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  color: var(--gl-ivory);
+  background: var(--gl-wine);
+  border: 1px solid var(--gl-gold);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-md);
+  transition:
+    transform var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+.wa-float:hover {
+  background: var(--gl-wine-80);
+  transform: translateY(-2px);
+}
+@media (width < 48rem) {
+  /* Above the shop's bottom bar (56px) and clear of the product page's buy bar. */
+  .shop ~ .wa-float {
+    bottom: calc(56px + env(safe-area-inset-bottom) + var(--space-3));
+  }
+  .shop:has(.gx-buybar[data-shown="true"]) ~ .wa-float {
+    bottom: calc(56px + var(--space-8) + env(safe-area-inset-bottom) + var(--space-5));
+  }
+}
+@media print {
+  .wa-float,
+  .consent {
+    display: none;
+  }
+}
+
+/* ---------- Product page: Buy now / Notify me ---------- */
+.pdp-buy2 {
+  display: flex;
+  width: 100%;
+  max-width: calc(24rem + 56px + var(--space-3));
+}
+.pdp-buy2 .gl-btn {
+  flex: 1;
+  min-height: 56px;
+}
+
+/* ---------- Cart: where the shopper is in the checkout ---------- */
+.cart-steps {
+  display: flex;
+  gap: var(--space-2);
+  margin: 0;
+  padding: var(--space-3) var(--space-5);
+  list-style: none;
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  border-bottom: var(--border-hair);
+}
+.cart-steps li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.cart-steps li + li::before {
+  content: "";
+  width: var(--space-4);
+  height: 1px;
+  background: var(--color-ornament);
+}
+.cart-steps [aria-current="step"] {
+  color: var(--color-heading);
+}
+
+/* ---------- Track your order ---------- */
+.track__lead {
+  margin-block: var(--space-4) var(--space-7);
+}
+.track__ways {
+  display: grid;
+  gap: var(--space-6);
+  margin: 0 0 var(--space-7);
+  padding: 0;
+  list-style: none;
+}
+.track__way {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-5);
+  padding-bottom: var(--space-6);
+  border-bottom: var(--border-hair);
+}
+.track__num {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  font-size: var(--text-sm);
+  color: var(--color-accent-text);
+  border: 1px solid var(--color-ornament);
+  border-radius: var(--radius-pill);
+}
+.track__title {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 400;
+  color: var(--color-heading);
+}
+.track__action {
+  margin-top: var(--space-4);
+}
+/* The drawer is head / lines / foot; the steps row adds one more auto row above the lines. */
+.cart__inner:has(> .cart-steps) {
+  grid-template-rows: auto auto 1fr auto;
+}
+
+/* ---------- Reveal: a block fades up 16px once as it scrolls into view (components/motion/Reveal) ---------- */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity var(--duration-reveal) var(--ease-enter) var(--reveal-delay, 0s),
+    transform var(--duration-reveal) var(--ease-enter) var(--reveal-delay, 0s);
+}
+[data-reveal][data-shown="true"] {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Journal (shop/blogs) ---------- */
+.journal__head {
+  display: grid;
+  gap: var(--space-4);
+  justify-items: start;
+  margin-bottom: var(--space-8);
+}
+.journal__topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.journal__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: var(--border-hair);
+}
+.journal__item {
+  display: grid;
+  gap: var(--space-3);
+  padding-block: var(--space-6);
+  border-bottom: var(--border-hair);
+}
+.journal__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.journal__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 400;
+  line-height: var(--leading-snug);
+  text-wrap: balance;
+}
+.journal__link {
+  color: var(--color-heading);
+  text-decoration: none;
+  background: linear-gradient(var(--color-ornament), var(--color-ornament)) 0 100% / 0 1px no-repeat;
+  transition: background-size var(--duration-base) var(--ease-standard);
+}
+.journal__link:hover,
+.journal__link:focus-visible {
+  background-size: 100% 1px;
+}
+.journal__excerpt {
+  margin: 0;
+  max-width: var(--measure);
+  color: var(--color-text-muted);
+}
+.journal__crumbs {
+  margin-bottom: var(--space-5);
+}
+.journal__h1 {
+  margin-bottom: var(--space-4);
+  font-size: var(--text-4xl);
+  text-wrap: balance;
+}
+.journal__rule {
+  margin-block: var(--space-6);
+}
+.journal__products,
+.journal__more {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-8);
+}
+.journal__moreList {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-xl);
+}
+
+/* The article text itself (the store's own HTML, cleaned in lib/blog.ts). */
+.prose {
+  max-width: var(--measure);
+  font-size: var(--text-lg);
+  line-height: var(--leading-body);
+}
+.prose > * + * {
+  margin-top: var(--space-4);
+}
+.prose p,
+.prose ul,
+.prose ol {
+  margin-block: 0;
+}
+.prose h2,
+.prose h3,
+.prose h4 {
+  margin-top: var(--space-7);
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: var(--leading-snug);
+  color: var(--color-heading);
+}
+.prose h2 {
+  font-size: var(--text-2xl);
+}
+.prose h3,
+.prose h4 {
+  font-size: var(--text-xl);
+}
+.prose ul,
+.prose ol {
+  display: grid;
+  gap: var(--space-2);
+  padding-left: var(--space-5);
+}
+.prose ul {
+  list-style: disc;
+}
+.prose ol {
+  list-style: decimal;
+}
+.prose li::marker {
+  color: var(--color-ornament);
+}
+.prose li > p {
+  margin: 0;
+}
+.prose a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--color-ornament);
+  text-underline-offset: 0.25em;
+}
+.prose blockquote {
+  margin-inline: 0;
+  padding-left: var(--space-5);
+  border-left: 1px solid var(--color-ornament);
+  color: var(--color-text-muted);
+}
+
+/* ---------- Page not found ---------- */
+/* The site-wide page has no shop layout above it, so it clears the floating header itself. */
+main.not-found {
+  padding-top: calc(72px + var(--section-y));
+}
+.not-found__lead {
+  margin-block: var(--space-4) var(--space-6);
+}
+.not-found__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}

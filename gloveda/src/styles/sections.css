@@ -1,0 +1,237 @@
+/*
+ * Section layer of the parent site, on top of the Gloveda Design System (tokens only; no new colours or
+ * sizes). The bands, grid, type and quiet link are the same as the shop's (site/src/styles/shop-ui.css).
+ */
+
+/* ---------- Layout: bands and the 12-column grid ---------- */
+.gx-band {
+  padding-block: var(--section-y);
+}
+.gx-band--sand {
+  background: var(--color-surface-muted);
+}
+.gx-band--wine {
+  background: var(--site-gradient);
+}
+.gx-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--space-6);
+  row-gap: var(--space-7);
+}
+.gx-grid > * {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+@media (width >= 64rem) {
+  .gx-col-4 {
+    grid-column: span 4;
+  }
+  .gx-col-5 {
+    grid-column: span 5;
+  }
+  .gx-col-7 {
+    grid-column: span 7;
+  }
+  .gx-col-8 {
+    grid-column: span 8;
+  }
+  .gx-col-6 {
+    grid-column: span 6;
+  }
+}
+
+/* ---------- Type ---------- */
+.gx-label {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-accent-text);
+}
+.gx-display {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--text-4xl);
+  line-height: 1.04;
+  letter-spacing: var(--tracking-display);
+  color: var(--color-heading);
+  text-wrap: balance;
+}
+.gx-title {
+  margin: 0;
+  font-weight: 400;
+  font-size: var(--text-2xl);
+  line-height: 1.15;
+  letter-spacing: var(--tracking-display);
+  color: var(--color-heading);
+  text-wrap: balance;
+}
+.gx-lead {
+  margin: 0;
+  font-size: var(--text-lg);
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  max-width: 30em;
+}
+.gx-stack {
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+  justify-items: start;
+}
+
+/* ---------- Quiet text link with an arrow that steps forward ---------- */
+.gx-more {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  font-size: var(--text-base);
+  color: var(--color-heading);
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-ornament);
+}
+.gx-more svg {
+  transition: transform var(--duration-base) var(--ease-enter);
+}
+.gx-more:hover svg {
+  transform: translateX(4px);
+}
+
+.gx-head {
+  display: grid;
+  gap: var(--space-3);
+  margin-bottom: var(--space-8);
+}
+.gx-head--split {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+
+/* ---------- The Gloveda family: one door per house ---------- */
+.family__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-6);
+}
+@media (width >= 64rem) {
+  .family__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.family__door {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: var(--space-3);
+  height: 100%;
+  padding: var(--space-7) var(--space-6);
+  border-top: 1px solid var(--color-ornament);
+}
+.family__name {
+  margin: 0;
+  font-size: var(--text-2xl);
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--color-heading);
+}
+.family__what {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-accent-text);
+}
+.family__text {
+  margin: 0;
+  color: var(--color-text-muted);
+  line-height: var(--leading-body);
+  max-width: 30em;
+}
+.family__door .gx-more {
+  justify-self: start;
+}
+
+/* ---------- Gloveda Revive ---------- */
+.revive__head {
+  max-width: 44rem;
+}
+.revive__ways {
+  list-style: none;
+  margin: var(--space-8) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-6);
+}
+@media (width >= 48rem) {
+  .revive__ways {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (width >= 72rem) {
+  .revive__ways {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.revive__way {
+  display: grid;
+  gap: var(--space-2);
+  align-content: start;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-ornament);
+}
+.revive__wayName {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: 400;
+  color: var(--color-heading);
+}
+.revive__wayText {
+  margin: 0;
+  color: var(--color-text-muted);
+  line-height: var(--leading-body);
+}
+.revive__ledger {
+  display: grid;
+  gap: var(--space-8);
+  margin-top: var(--space-9);
+}
+@media (width >= 64rem) {
+  .revive__ledger {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.revive__sub {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--color-accent-text);
+}
+.revive__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+.revive__list li {
+  display: grid;
+  gap: var(--space-1);
+  padding-block: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+.revive__list strong {
+  font-weight: 400;
+  font-size: var(--text-lg);
+  color: var(--color-heading);
+}
+.revive__list span {
+  color: var(--color-text-muted);
+}
+.revive__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-5);
+  margin-top: var(--space-8);
+}

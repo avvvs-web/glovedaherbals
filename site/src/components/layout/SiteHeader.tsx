@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { SiteNav, type NavPanel, type SearchItem } from "@/components/layout/SiteNav";
 import { activeConcerns } from "@/lib/shop/concerns";
 import { formatMoney, getCollectionProducts, getCollections, getProducts } from "@/lib/shop/data";
-import { collections, EXPERIENCE_URL, shopUrl } from "@/lib/site";
+import { collections, EXPERIENCE_URL, REVIVE_URL, shopUrl, siteUrl } from "@/lib/site";
 
 /**
  * The navigation capsule and its menu. Every destination is a real one on the store. Range photos,
@@ -18,7 +18,7 @@ export async function SiteHeader({ actions }: { actions?: ReactNode }) {
   // One short menu, and every line of it but two leads into the store.
   const concern = { name: "By concern", href: shopUrl("/concerns") };
   const sets = { name: "Sets and gifting", href: shopUrl("/collections/gloveda-combo") };
-  const story = { name: "Our story", href: "/#our-story" };
+  const story = { name: "Our story", href: siteUrl("/#our-story") };
   const help = { name: "Help", href: shopUrl("/help") };
   const wishlist = shopUrl("/account?tab=saved");
   const panel: NavPanel = {
@@ -46,7 +46,7 @@ export async function SiteHeader({ actions }: { actions?: ReactNode }) {
       },
       {
         title: "Gloveda",
-        links: [story, { name: "Journal", href: shopUrl("/blogs") }, { name: "Gloveda Experience", href: EXPERIENCE_URL }, help, { name: "Track your order", href: shopUrl("/track") }, { name: "Wishlist", href: wishlist }, { name: "Sign in", href: shopUrl("/account") }],
+        links: [story, { name: "Journal", href: shopUrl("/blogs") }, { name: "Gloveda Experience", href: EXPERIENCE_URL }, { name: "Gloveda Revive", href: REVIVE_URL }, help, { name: "Track your order", href: shopUrl("/track") }, { name: "Wishlist", href: wishlist }, { name: "Sign in", href: shopUrl("/account") }],
       },
     ],
   };

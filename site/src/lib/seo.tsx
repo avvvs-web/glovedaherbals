@@ -1,5 +1,5 @@
 import { COMPANY } from "@/content/policies";
-import { BRAND, SITE_URL, shopUrl, social } from "@/lib/site";
+import { BRAND, SHOP_BASE, shopUrl, social } from "@/lib/site";
 
 /**
  * Structured data (JSON-LD) for search engines and AI answer engines. Only verified values: the brand,
@@ -8,13 +8,13 @@ import { BRAND, SITE_URL, shopUrl, social } from "@/lib/site";
  */
 
 /** Absolute address: structured data must not use relative URLs. */
-export const abs = (url: string) => (/^https?:\/\//.test(url) ? url : `${SITE_URL}${url.startsWith("/") ? "" : "/"}${url}`);
+export const abs = (url: string) => (/^https?:\/\//.test(url) ? url : `${SHOP_BASE}${url.startsWith("/") ? "" : "/"}${url}`);
 
 export function JsonLd({ data }: { data: object }) {
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, "\\u003c") }} />;
 }
 
-export const ORG_ID = `${SITE_URL}/#org`;
+export const ORG_ID = `${SHOP_BASE}/#org`;
 
 /** Organization + WebSite (with site search), on every page from the root layout. */
 export function SiteJsonLd() {
@@ -26,8 +26,8 @@ export function SiteJsonLd() {
         "@id": ORG_ID,
         name: BRAND,
         alternateName: "Gloveda",
-        url: `${SITE_URL}/`,
-        logo: `${SITE_URL}/brand/logo-primary-on-light.png`,
+        url: `${SHOP_BASE}/`,
+        logo: `${SHOP_BASE}/brand/logo-primary-on-light.png`,
         description: "Ayurvedic skincare and hair care formulated by Ayurvedic doctors and made in small batches, from Arya Vaidya Vilasini Vaidya Sala, established in 1921.",
         sameAs: social.map((s) => s.url),
         parentOrganization: { "@type": "Organization", name: COMPANY.name, foundingDate: "1921", address: { "@type": "PostalAddress", streetAddress: "Taluk Road, Puthiyara PO", addressLocality: "Kozhikode", addressRegion: "Kerala", postalCode: "673004", addressCountry: "IN" } },
@@ -35,9 +35,9 @@ export function SiteJsonLd() {
       },
       {
         "@type": "WebSite",
-        "@id": `${SITE_URL}/#website`,
+        "@id": `${SHOP_BASE}/#website`,
         name: BRAND,
-        url: `${SITE_URL}/`,
+        url: `${SHOP_BASE}/`,
         inLanguage: "en-IN",
         publisher: { "@id": ORG_ID },
         potentialAction: {

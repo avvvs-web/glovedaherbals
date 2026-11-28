@@ -42,9 +42,9 @@ In the same Headless storefront, open **Customer Account API**:
 1. Make sure the store uses the new customer accounts (Settings > Customer accounts).
 2. Create the client and copy its **client ID** (and the secret, if a confidential client is chosen).
 3. Register these addresses:
-   - Callback: `https://shop.glovedaherbals.com/account/callback`
-   - JavaScript origin: `https://shop.glovedaherbals.com`
-   - Logout: `https://shop.glovedaherbals.com`
+   - Callback: `https://herbals.gloveda.co/account/callback`
+   - JavaScript origin: `https://herbals.gloveda.co`
+   - Logout: `https://herbals.gloveda.co`
 
 Send back: the client ID (`SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID`) and, if used, the secret (`SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_SECRET`).
 
@@ -54,16 +54,19 @@ Not built yet: the sign-in flow itself (the callback route, the session cookie, 
 
 The store's reviews app is Loox. Product pages show the average score and count, and Loox's own list with "Write a review".
 
-- Loox only allows its review list on `glovedaherbals.com` and its subdomains. It will appear on `shop.glovedaherbals.com`; it is blank on localhost and on preview addresses.
+- Loox only allows its review list on `glovedaherbals.com` and its subdomains, so it is not shown on `herbals.gloveda.co` (a plain note takes its place; the score and count still show). Ask Loox to allow `herbals.gloveda.co`, then change `REVIEWS_HOST` in `src/lib/shop/reviews.ts`. It is also blank on localhost and on preview addresses.
 - The live store also has an empty Judge.me widget left over. It can be removed in the theme.
 - Once step 2 is done, expose the product metafields `loox.avg_rating` and `loox.num_reviews` to the Storefront API so the scores come from Shopify rather than from Loox's page.
 
-## 5. The shop's address
+## 5. The two projects (client, 2026-11-28)
 
-1. Add the DNS record for `shop.glovedaherbals.com`, pointing at the site's host.
-2. Add the same hostname to the hosting project's domains.
-3. Keep `SHOP_HOSTS=shop.glovedaherbals.com` in the environment: requests to that host are served the shop pages.
-4. Only then set `NEXT_PUBLIC_SHOP_ORIGIN=https://shop.glovedaherbals.com` in the hosting project and redeploy. Until it is set, every shop link goes to `/shop` on the site's own address, so the shop works before the DNS record exists.
+- `gloveda.co` is the parent site: the film, the brand story and a way into Gloveda Herbals, Gloveda Experience and Gloveda Revive. It is its own codebase, `gloveda/` in this repository, and its own Vercel project.
+- `herbals.gloveda.co` is the shop: this codebase (`site/`), its own Vercel project. The pages live under `src/app/shop`; `src/proxy.ts` serves every request from there, so the shop keeps the store's paths (`/collections/…`, `/products/…`), and `herbals.gloveda.co/shop/…` moves to the address without `/shop`.
+- The addresses are the defaults in `src/lib/site.ts`, so production needs no environment values for them. If `NEXT_PUBLIC_SITE_URL` or `NEXT_PUBLIC_SHOP_ORIGIN` is set in Vercel with an older address, change or delete it.
+- Each project has its own `robots.txt` and `sitemap.xml`; submit both in Google Search Console.
+- Vercel: the shop project has Root Directory `site` and the domain `herbals.gloveda.co`; the parent project has Root Directory `gloveda` and the domains `gloveda.co` and `www.gloveda.co` (redirecting to `gloveda.co`). The DNS for gloveda.co is Vercel's.
+- Checkout is still Shopify's, on `glovedaherbals.com/cart`.
+- For local work, `.env.local` sets `NEXT_PUBLIC_SHOP_ORIGIN=http://localhost:3000/shop`, so the shop opens at `/shop` on the local server.
 
 ## 6. Content the store team controls
 

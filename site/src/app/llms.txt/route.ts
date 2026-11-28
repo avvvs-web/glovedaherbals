@@ -4,7 +4,7 @@ import { abs } from "@/lib/seo";
 import { activeConcerns } from "@/lib/shop/concerns";
 import { formatMoney, getCollectionProducts, getProducts } from "@/lib/shop/data";
 import { describe } from "@/lib/shop/describe";
-import { BRAND, collections, shopUrl } from "@/lib/site";
+import { BRAND, collections, shopUrl, siteUrl } from "@/lib/site";
 
 export const revalidate = 3600;
 
@@ -72,8 +72,9 @@ ${policies.map((p) => `- [${p.title}](${abs(shopUrl(`/policies/${p.handle}`))}):
 
 ## Optional
 
-- [Our story](${abs("/#our-story")}): the Vaidyars of ${COMPANY.name}, from 1921.
+- [Our story](${siteUrl("/#our-story")}): the Vaidyars of ${COMPANY.name}, from 1921.
 - [Sitemap](${abs("/sitemap.xml")})
+- [Gloveda](${siteUrl("/")}): the parent site, with Gloveda Experience and Gloveda Revive.
 `;
   return new Response(body, { headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
 }
