@@ -5,7 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { filmLoad } from "@/lib/film-load";
-import { FrameSequence, supportsAvif, type SequenceFormat } from "@/lib/frame-sequence";
+import { FrameSequence } from "@/lib/frame-sequence";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -187,16 +187,16 @@ export function ScrollFilm({ chapters }: Props) {
       s.focus(near, key >= state.current.drawn ? 1 : -1, Math.ceil((wide ? coverRect(w, h).w : r.w) / 128) * 128);
       state.current.focus = near;
     }
-    const lo = Math.floor(key);
-    const mix = key - lo;
-    const a = s.ready(lo);
-    const b = mix > 0.02 ? s.ready(lo + 1) : null;
-    // Both neighbours decoded: the second is laid over the first. Only one of them: hold it, rather than
-    // jumping to some other frame and back. Neither (a fast flick, or still loading): the closest decoded
-    // frame is shown. Drawing never waits on a decode.
-    const img: ImageBitmap | null = a ?? (b && mix >= 0.5 ? b : null) ?? s.near(near);
+    // The decoded frames on either side of the film position, laid one over the other by how far between
+    // them it is. With every frame decoded these are the two neighbours, and slow scrolling glides
+    // between them. On a quick flick, before the full-size frames have caught up, they may be a few frames
+    // apart (or the small copies kept for the whole film): the picture then dissolves smoothly between
+    // them instead of stepping. Drawing never waits on a decode.
+    const [ai, a, bi, b] = s.bracket(key);
+    const img = a ?? b;
     if (!img) return;
-    const blend = img === a && b ? b : null;
+    const mix = a && b && bi > ai ? (key - ai) / (bi - ai) : 0;
+    const blend = a && b && mix > 0.01 ? b : null;
     ctx.imageSmoothingQuality = "high";
     const side = Math.ceil(r.x); // the strip left bare at each side when the camera has pulled back
     const paint = (bmp: ImageBitmap) => {
@@ -241,11 +241,13 @@ export function ScrollFilm({ chapters }: Props) {
       EVENTS.forEach((e) => window.removeEventListener(e, engage));
     };
     EVENTS.forEach((e) => window.addEventListener(e, engage, { passive: true, once: true }));
-    supportsAvif().then((avif) => {
+    // The scrubbed film uses the WebP frames, not the AVIF ones: they are only about a tenth larger but
+    // decode several times faster, and decoding, not downloading, is what held the film back on a quick
+    // scroll (measured 2026-11-28: on a fast scroll 59% of drawn frames were stand-ins with AVIF).
+    Promise.resolve().then(() => {
       if (cancelled) return;
-      const fmt: SequenceFormat = avif ? "avif" : "webp";
       // Upright screens are phones and tablets: keep fewer full-size frames decoded there.
-      const s = new FrameSequence(`/seq/film/${size}`, FRAMES, fmt, 6, upright ? { ahead: 12, behind: 4, slack: 2 } : undefined);
+      const s = new FrameSequence(`/seq/film/${size}`, FRAMES, "webp", 6, upright ? { ahead: 16, behind: 4, slack: 2 } : undefined);
       s.onReady = (i) => {
         // A frame near the one on screen was decoded: draw it (first paint, or sharpening after a flick).
         if (Math.abs(i - state.current.frame) <= 8) requestAnimationFrame(draw);

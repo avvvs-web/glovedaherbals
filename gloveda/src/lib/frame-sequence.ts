@@ -11,7 +11,9 @@
 export type SequenceFormat = "avif" | "webp";
 
 /** Decoded full-size frames kept around the current one (1080p frames are ~8 MB each once decoded). */
-const WINDOW = { ahead: 20, behind: 6, slack: 2 };
+const WINDOW = { ahead: 32, behind: 6, slack: 2 };
+/** Frames decoded at once: the browser decodes in the background, so more cores keep up with a quicker scroll. */
+const DECODERS = typeof navigator === "undefined" ? 4 : Math.max(4, Math.min(8, (navigator.hardwareConcurrency || 4) - 2));
 /** The always-available fallback set: every Nth frame at this width. */
 const SPARSE = { every: 8, width: 640 };
 
@@ -154,6 +156,39 @@ export class FrameSequence {
     this.queue = [...front, ...this.queue.filter((k) => !moved.has(k))];
   }
 
+  /**
+   * The closest decoded frames at or below `x` and at or above it, as [index, bitmap] pairs: full-size
+   * ones where they are decoded, else the small copies kept for the whole film. Either side may be
+   * missing (null) at the very start or end, or before anything has been decoded.
+   */
+  bracket(x: number): [number, ImageBitmap | null, number, ImageBitmap | null] {
+    const lo = Math.floor(x);
+    const hi = Math.ceil(x);
+    let ai = lo;
+    let a: ImageBitmap | null = null;
+    for (let i = lo; i >= 0 && lo - i <= SPARSE.every * 2; i--) {
+      a = this.bitmaps.get(i) ?? this.sparse.get(i) ?? null;
+      if (a) {
+        ai = i;
+        break;
+      }
+    }
+    let bi = hi;
+    let b: ImageBitmap | null = null;
+    for (let i = hi; i < this.count && i - hi <= SPARSE.every * 2; i++) {
+      b = this.bitmaps.get(i) ?? this.sparse.get(i) ?? null;
+      if (b) {
+        bi = i;
+        break;
+      }
+    }
+    if (!a && !b) {
+      const n = this.near(Math.round(x));
+      return [lo, n, hi, null];
+    }
+    return [ai, a, bi, b];
+  }
+
   /** Frame `i` at full size, decoded and ready to draw, if it is in the window. */
   ready(i: number): ImageBitmap | null {
     return this.bitmaps.get(i) ?? null;
@@ -181,7 +216,7 @@ export class FrameSequence {
   }
 
   private pump() {
-    while (!this.cancelled && this.decoding.size < 4) {
+    while (!this.cancelled && this.decoding.size < DECODERS) {
       // Nearest missing frame to the centre of the window first.
       let pick = -1;
       for (let d = 0; d <= this.win.ahead && pick < 0; d++) {

@@ -19,6 +19,8 @@ export async function SiteHeader({ actions }: { actions?: ReactNode }) {
   const concern = { name: "By concern", href: shopUrl("/concerns") };
   const sets = { name: "Sets and gifting", href: shopUrl("/collections/gloveda-combo") };
   const story = { name: "Our story", href: siteUrl("/#our-story") };
+  // Home is the parent site, gloveda.co; the mark in the centre stays the way to the shop's own home.
+  const home = { name: "Home", href: siteUrl("/") };
   const help = { name: "Help", href: shopUrl("/help") };
   const wishlist = shopUrl("/account?tab=saved");
   const panel: NavPanel = {
@@ -46,7 +48,7 @@ export async function SiteHeader({ actions }: { actions?: ReactNode }) {
       },
       {
         title: "Gloveda",
-        links: [story, { name: "Journal", href: shopUrl("/blogs") }, { name: "Gloveda Experience", href: EXPERIENCE_URL }, { name: "Gloveda Revive", href: REVIVE_URL }, help, { name: "Track your order", href: shopUrl("/track") }, { name: "Wishlist", href: wishlist }, { name: "Sign in", href: shopUrl("/account") }],
+        links: [home, story, { name: "Journal", href: shopUrl("/blogs") }, { name: "Gloveda Experience", href: EXPERIENCE_URL }, { name: "Gloveda Revive", href: REVIVE_URL }, help, { name: "Track your order", href: shopUrl("/track") }, { name: "Wishlist", href: wishlist }, { name: "Sign in", href: shopUrl("/account") }],
       },
     ],
   };
@@ -67,7 +69,7 @@ export async function SiteHeader({ actions }: { actions?: ReactNode }) {
         <nav aria-label="Main">
           <SiteNav
             panel={panel}
-            links={[...(byConcern ? [concern] : []), sets, story]}
+            links={[home, ...(byConcern ? [concern] : []), sets, story]}
             search={search}
             searchAction={shopUrl("/search")}
             shortcuts={[...collections.map((c) => ({ name: c.name, href: shopUrl(c.path) })), ...(byConcern ? [concern] : [])]}
