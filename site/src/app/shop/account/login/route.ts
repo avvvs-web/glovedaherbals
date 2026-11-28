@@ -1,13 +1,19 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
+import { beginSignIn, cookieOptions, COOKIES, signInReady } from "@/lib/shop/customer";
 import { shopUrl } from "@/lib/site";
 
 /**
- * Sign-in. Gloveda's accounts are Shopify's customer accounts: the customer signs in on Shopify's own
- * page with a code sent by email, and comes back here signed in (no password is ever handled by this
- * site). That needs the store's Customer Account API client id; until it is set, this route says so
- * plainly instead of pretending to sign anyone in.
+ * The step after this site's own sign-in page. Gloveda's accounts are Shopify's customer accounts, and
+ * Shopify alone may confirm who a customer is: it emails them a code and checks it on its own page (no
+ * password is ever handled by this site). The email typed here is handed on so that page starts from it.
+ * If the store's sign-in cannot be reached, the account page says so plainly.
  */
-export function GET() {
-  const ready = Boolean(process.env.SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID);
-  return NextResponse.redirect(shopUrl(`/account?signin=${ready ? "pending" : "unavailable"}`));
+export async function GET(request: NextRequest) {
+  const q = request.nextUrl.searchParams;
+  const email = (q.get("email") ?? "").trim();
+  const start = signInReady ? await beginSignIn(q.get("to") ?? "/account", /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email : undefined) : null;
+  if (!start) return NextResponse.redirect(shopUrl("/account?signin=unavailable"));
+  const res = NextResponse.redirect(start.url);
+  res.cookies.set(COOKIES.auth, start.cookie, cookieOptions.auth);
+  return res;
 }

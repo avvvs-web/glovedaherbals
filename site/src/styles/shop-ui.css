@@ -1350,6 +1350,191 @@ html[data-header="hidden"] .gx-rtabs[data-stuck="true"] {
 .gx-acct__gate .gl-small {
   margin: 0;
 }
+.gx-acct__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-4);
+}
+.gx-acct__card {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+  padding: var(--space-5) var(--space-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+.gx-acct__card .gl-small,
+.gx-acct__card .gx-label {
+  margin: 0;
+}
+.gx-acct__cardHead {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-5);
+  width: 100%;
+}
+.gx-acct__cardTitle,
+.gx-acct__cardMeta {
+  margin: 0;
+  font-size: var(--text-lg);
+  color: var(--color-heading);
+}
+.gx-acct__cardMeta {
+  font-variant-numeric: tabular-nums;
+}
+.gx-acct__lines {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-1);
+}
+.gx-acct__address {
+  display: grid;
+  gap: var(--space-1);
+  font-style: normal;
+}
+.gx-acct__details {
+  margin: 0;
+  display: grid;
+  gap: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+.gx-acct__details > div {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-6);
+}
+.gx-acct__details > div + div {
+  border-top: 1px solid var(--color-border);
+}
+.gx-acct__details dt {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+.gx-acct__details dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.gx-acct__sums {
+  margin: 0;
+  width: 100%;
+  display: grid;
+  gap: var(--space-2);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+.gx-acct__sums > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-5);
+  font-variant-numeric: tabular-nums;
+}
+.gx-acct__sums dt {
+  color: var(--color-text-muted);
+}
+.gx-acct__sums dd {
+  margin: 0;
+}
+.gx-acct__sums .gx-acct__sumTotal dt,
+.gx-acct__sums .gx-acct__sumTotal dd {
+  color: var(--color-heading);
+  font-size: var(--text-lg);
+}
+/* The steps a carrier has reported, newest as the store returns them, on a thin gold line. */
+.gx-track {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 var(--space-5);
+  width: 100%;
+  display: grid;
+  gap: var(--space-4);
+  border-left: 1px solid var(--gl-gold);
+}
+.gx-track li {
+  position: relative;
+  display: grid;
+  gap: 2px;
+}
+.gx-track li::before {
+  content: "";
+  position: absolute;
+  left: calc(-1 * var(--space-5) - 4px);
+  top: 0.55em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gl-gold);
+}
+.gx-form {
+  display: grid;
+  gap: var(--space-4);
+  width: 100%;
+}
+.gx-form--two {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+}
+.gx-form__wide {
+  grid-column: 1 / -1;
+}
+.gx-form__check {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+}
+.gx-form__check input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--gl-wine);
+}
+.gx-acct__edit {
+  width: 100%;
+}
+.gx-acct__edit > summary {
+  cursor: pointer;
+  width: fit-content;
+  color: var(--color-heading);
+  text-decoration: underline;
+  text-decoration-color: var(--color-ornament);
+  text-underline-offset: 0.25em;
+}
+.gx-acct__edit[open] > summary {
+  margin-bottom: var(--space-5);
+}
+.gx-acct__remove {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+.gx-signin {
+  display: grid;
+  gap: var(--space-7);
+  max-width: 30rem;
+  padding-top: var(--space-7);
+}
+.gx-signin__why {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-5) 0 0;
+  display: grid;
+  gap: var(--space-2);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
 .gx-row__note {
   max-width: 44em;
 }
@@ -1813,8 +1998,58 @@ html[data-header="hidden"] .gx-rtabs[data-stuck="true"] {
   font-size: var(--text-sm);
   color: var(--color-text-muted);
 }
-.gx-reviews__widget {
-  min-height: 12rem;
+.gx-reviews__body {
+  display: grid;
+  gap: var(--space-7);
+}
+.gx-reviews__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  columns: 18rem 3;
+  column-gap: var(--space-6);
+}
+.gx-review {
+  break-inside: avoid;
+  display: grid;
+  margin-bottom: var(--space-6);
+  background: var(--color-surface);
+  border: var(--border-hair);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.gx-review__photo {
+  display: block;
+  width: 100%;
+  max-height: 16rem;
+  object-fit: cover;
+  background: var(--color-surface-muted);
+}
+.gx-review__text {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-5);
+}
+.gx-review__stars {
+  margin: 0;
+  line-height: 0;
+}
+.gx-review__words {
+  margin: 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.gx-review__name {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+.gx-reviews__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-5) var(--space-6);
+  margin: 0;
 }
 
 /* ---------- Help centre ---------- */

@@ -17,7 +17,7 @@ import { Stars } from "@/components/shop/ui/Stars";
 import { concerns, matchConcern } from "@/lib/shop/concerns";
 import { CHECKOUT_BASE, formatMoney, getCollectionProducts, getProduct, getProducts, type ShopProduct } from "@/lib/shop/data";
 import { describe } from "@/lib/shop/describe";
-import { getRating, LOOX_ID, LOOX_SHOP, REVIEWS_HOST } from "@/lib/shop/reviews";
+import { getProductReviews } from "@/lib/shop/reviews";
 import { abs, breadcrumbs, JsonLd, ORG_ID } from "@/lib/seo";
 import { collections, shopUrl } from "@/lib/site";
 
@@ -89,7 +89,8 @@ export default async function ProductPage({ params }: PageProps<"/shop/products/
       </section>
     );
   const variant = product.variants.find((v) => v.available) ?? product.variants[0];
-  const [place, all, rating] = await Promise.all([placeOf(product), getProducts(), getRating(product.id)]);
+  const [place, all, reviews] = await Promise.all([placeOf(product), getProducts(), getProductReviews(product.id)]);
+  const rating = reviews.rating;
   const reviewsLabel = rating ? `${rating.count} ${rating.count === 1 ? "review" : "reviews"}` : "";
   const d = describe(product.description);
   const price = formatMoney(variant.price);
@@ -331,7 +332,7 @@ export default async function ProductPage({ params }: PageProps<"/shop/products/
               </p>
             ) : null}
           </div>
-          <Reviews productId={product.id} looxId={LOOX_ID} shop={LOOX_SHOP} allowed={REVIEWS_HOST} />
+          <Reviews data={reviews} title={product.title} />
         </div>
       </section>
 

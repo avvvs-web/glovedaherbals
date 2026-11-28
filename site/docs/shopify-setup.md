@@ -6,7 +6,7 @@ What the Gloveda Herbals team needs to do in Shopify, what value each step produ
 npm run check:shopify
 ```
 
-State on 2026-11-23: the public catalogue and reviews are live; the Storefront API, customer accounts and the shop's address are not set up yet.
+State on 2026-11-28: the Headless channel is installed again, with one storefront ("Glovedaherbals Headless") for `herbals.gloveda.co`. All 21 products are published to it, the public Storefront API token answers (version `2026-10`), and the Customer Account API has its client ID and the three `herbals.gloveda.co` addresses of step 3. The keys are in `.env.local`; they are not in the Vercel project yet. Sign-in and the account pages use the Customer Account API. The shop's pages still read the public catalogue and use the cart link (see "Checkout" below).
 
 ## 1. Public catalogue: done
 
@@ -48,15 +48,25 @@ In the same Headless storefront, open **Customer Account API**:
 
 Send back: the client ID (`SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID`) and, if used, the secret (`SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_SECRET`).
 
-Not built yet: the sign-in flow itself (the callback route, the session cookie, the orders and addresses pages' data). It needs the client ID and a public HTTPS address to test against, so it follows this step.
+Built (2026-11-28), in `src/lib/shop/customer.ts` and the routes under `src/app/shop/account/`:
 
-## 4. Reviews (Loox): done, with one condition
+- `/account/login` sends the customer to Shopify's sign-in page (public client, PKCE); `/account/callback` exchanges the code for their tokens; `/account/refresh` renews the hourly access token; `/account/logout` signs out here and at Shopify.
+- The tokens are kept in cookies that scripts cannot read (`gl_session`, `gl_idt`), for 30 days.
+- `/account/signin` is the shop's own sign-in page: the customer types their email there and it is handed to Shopify (`login_hint`), whose page sends and checks the six-digit code. Shopify does not let a storefront check the code itself, and the older email-and-password accounts that allowed a fully custom form were withdrawn in February 2026.
+- The account page shows the customer's orders, addresses and details, and lets them change their name and add, edit, remove and set a default address (`src/app/shop/account/actions.ts`). Email cannot be changed through the API.
+- `/account/orders/<number>` is the order's own page: items, totals, delivery address, and for each parcel the carrier, tracking number, tracking link and the steps reported. Each part is asked for separately, so one missing field does not blank the page.
+- Not yet tested with a real signed-in customer: the first sign-in on the live site should be followed by a look at each account tab and one order page.
+- The callback is registered for `https://herbals.gloveda.co` only, so sign-in can be completed on the live address, not on localhost or a preview. Set `SHOPIFY_CUSTOMER_ACCOUNT_ORIGIN` if the shop's address ever changes, and register the new address in Shopify.
 
-The store's reviews app is Loox. Product pages show the average score and count, and Loox's own list with "Write a review".
+## 4. Reviews (Loox): done
 
-- Loox only allows its review list on `glovedaherbals.com` and its subdomains, so it is not shown on `herbals.gloveda.co` (a plain note takes its place; the score and count still show). Ask Loox to allow `herbals.gloveda.co`, then change `REVIEWS_HOST` in `src/lib/shop/reviews.ts`. It is also blank on localhost and on preview addresses.
+The store's reviews app is Loox. Loox does not allow its reviews frame on `herbals.gloveda.co` (it lists the store's own domain only), so the shop reads each product's reviews from Loox's public page on the server (`src/lib/shop/reviews.ts`) and shows them in its own design: name, stars, words and the customer's photo. Nothing is edited; the list refreshes hourly.
+
+- "Write a review" opens Loox's own page for the product, where the store collects reviews.
+- Up to 24 reviews are shown per product; a link to Loox's page offers the rest.
+- If Loox changes its page, the reader shows no reviews instead of guessing. Check a product page after any Loox update.
 - The live store also has an empty Judge.me widget left over. It can be removed in the theme.
-- Once step 2 is done, expose the product metafields `loox.avg_rating` and `loox.num_reviews` to the Storefront API so the scores come from Shopify rather than from Loox's page.
+- Optional: expose the product metafields `loox.avg_rating` and `loox.num_reviews` to the Storefront API so the scores come from Shopify.
 
 ## 5. The two projects (client, 2026-11-28)
 
@@ -65,7 +75,7 @@ The store's reviews app is Loox. Product pages show the average score and count,
 - The addresses are the defaults in `src/lib/site.ts`, so production needs no environment values for them. If `NEXT_PUBLIC_SITE_URL` or `NEXT_PUBLIC_SHOP_ORIGIN` is set in Vercel with an older address, change or delete it.
 - Each project has its own `robots.txt` and `sitemap.xml`; submit both in Google Search Console.
 - Vercel: the shop project has Root Directory `site` and the domain `herbals.gloveda.co`; the parent project has Root Directory `gloveda` and the domains `gloveda.co` and `www.gloveda.co` (redirecting to `gloveda.co`). The DNS for gloveda.co is Vercel's.
-- Checkout is still Shopify's, on `glovedaherbals.com/cart`.
+- Checkout is still Shopify's, on `glovedaherbals.com/cart`, reached by the cart link. It was left that way on purpose: the store's checkout runs through the GoKwik app, and a Storefront API cart opens Shopify's plain checkout instead, which may skip it. Confirm with whoever manages GoKwik before changing it.
 - For local work, `.env.local` sets `NEXT_PUBLIC_SHOP_ORIGIN=http://localhost:3000/shop`, so the shop opens at `/shop` on the local server.
 
 ## 6. Content the store team controls
