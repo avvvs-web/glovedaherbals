@@ -180,8 +180,13 @@ export async function getCollectionProducts(handle: string): Promise<ShopProduct
 export const formatMoney = (amount: number) =>
   new Intl.NumberFormat("en-IN", { style: "currency", currency: CURRENCY, maximumFractionDigits: amount % 1 === 0 ? 0 : 2 }).format(amount);
 
-/** Shopify cart permalink: opens the store's own cart/checkout with these variants. No order is placed here. */
-export const CHECKOUT_BASE = `${STORE}/cart`;
+/**
+ * Where checkout happens: the Shopify store's own address. The store takes payment through GoKwik only
+ * (Shopify's own checkout has no payment provider, checked 2026-11-28), and GoKwik's checkout opens on
+ * the store's pages, so the shop hands the bag over there (see app/shop/checkout/route.ts). If the
+ * store's primary domain changes, set SHOPIFY_CHECKOUT_ORIGIN to it.
+ */
+export const CHECKOUT_ORIGIN = (process.env.SHOPIFY_CHECKOUT_ORIGIN ?? STORE).replace(/\/$/, "");
 
 /**
  * The shop's hero banners. They belong to the store, not to this site: once the Storefront API token is

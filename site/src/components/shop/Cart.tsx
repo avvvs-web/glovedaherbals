@@ -177,7 +177,8 @@ export function CartProvider({
     [currency],
   );
   const buyable = entries.filter((e) => e.v.available);
-  const checkout = `${checkoutBase}/${buyable.map((e) => `${e.v.id}:${e.qty}`).join(",")}`;
+  // The shop's own /checkout address, which hands the bag to the store's checkout.
+  const checkout = `${checkoutBase}?items=${buyable.map((e) => `${e.v.id}:${e.qty}`).join(",")}`;
   const ctx: Ctx = { lines, count, add, addMany, set, open };
 
   useEffect(() => {

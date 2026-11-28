@@ -15,7 +15,7 @@ import { Icon } from "@/components/shop/ui/Icon";
 import { ProductRow } from "@/components/shop/ui/ProductRow";
 import { Stars } from "@/components/shop/ui/Stars";
 import { concerns, matchConcern } from "@/lib/shop/concerns";
-import { CHECKOUT_BASE, formatMoney, getCollectionProducts, getProduct, getProducts, type ShopProduct } from "@/lib/shop/data";
+import { formatMoney, getCollectionProducts, getProduct, getProducts, type ShopProduct } from "@/lib/shop/data";
 import { describe } from "@/lib/shop/describe";
 import { getProductReviews } from "@/lib/shop/reviews";
 import { abs, breadcrumbs, JsonLd, ORG_ID } from "@/lib/seo";
@@ -166,7 +166,7 @@ export default async function ProductPage({ params }: PageProps<"/shop/products/
           </div>
           <div className="pdp-buy2">
             {product.available ? (
-              <BuyNow checkoutBase={CHECKOUT_BASE} variantId={variant.id} title={product.title} price={variant.price} currency={currency} />
+              <BuyNow checkoutBase={shopUrl("/checkout")} variantId={variant.id} title={product.title} price={variant.price} currency={currency} />
             ) : (
               <NotifyMe title={product.title} />
             )}

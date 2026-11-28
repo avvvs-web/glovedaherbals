@@ -4,7 +4,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { BottomBar } from "@/components/shop/BottomBar";
 import { WhatsAppButton } from "@/components/shop/WhatsAppButton";
 import { CartButton, CartProvider, type CartVariant } from "@/components/shop/Cart";
-import { CHECKOUT_BASE, formatMoney, getProducts } from "@/lib/shop/data";
+import { formatMoney, getProducts } from "@/lib/shop/data";
 import { SHOP_ORIGIN, shopUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -26,7 +26,7 @@ export default async function ShopLayout({ children }: LayoutProps<"/shop">) {
     })),
   );
   return (
-    <CartProvider variants={variants} checkoutBase={CHECKOUT_BASE} shopOrigin={SHOP_ORIGIN} currency={process.env.SHOPIFY_CURRENCY ?? "INR"}>
+    <CartProvider variants={variants} checkoutBase={`${SHOP_ORIGIN}/checkout`} shopOrigin={SHOP_ORIGIN} currency={process.env.SHOPIFY_CURRENCY ?? "INR"}>
       <a className="gl-btn gl-btn--sm skip-link" href="#main">
         Skip to content
       </a>

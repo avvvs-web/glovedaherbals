@@ -6,12 +6,12 @@ import { whatsappUrl } from "@/lib/whatsapp";
 
 type Props = { checkoutBase: string; variantId: number; title: string; price: number; currency: string };
 
-/** Buy now: straight to Shopify's checkout with one of this product, leaving the bag as it is. */
+/** Buy now: straight to the store's checkout with one of this product, leaving the bag as it is. */
 export function BuyNow({ checkoutBase, variantId, title, price, currency }: Props) {
   return (
     <a
       className="gl-btn gl-btn--secondary buy-now"
-      href={`${checkoutBase}/${variantId}:1`}
+      href={`${checkoutBase}?items=${variantId}:1`}
       data-buy
       onClick={() => track("begin_checkout", [{ item_id: String(variantId), item_name: title, price, quantity: 1 }], currency)}
     >
